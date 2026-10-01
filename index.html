@@ -1,0 +1,2697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crea y publica tu propia web con base de datos, gratis — Tutorial</title>
+<style>
+:root{
+  --bg:#0a0e1a;
+  --bg-card:#0f172a;
+  --accent:#1e3a5f;
+  --text:#e2e8f0;
+  --text-dim:#94a3b8;
+  --border:#1e293b;
+  --link:#60a5fa;
+  --code-bg:#020617;
+  --ok:#22c55e;
+  --warn:#f59e0b;
+  --danger:#ef4444;
+  --info:#3b82f6;
+  --purple:#8b5cf6;
+  --fs:16px;
+  --radius:12px;
+  --shadow:0 4px 20px rgba(0,0,0,.35);
+}
+body.light{
+  --bg:#f1f5f9;
+  --bg-card:#ffffff;
+  --accent:#dbeafe;
+  --text:#0f172a;
+  --text-dim:#475569;
+  --border:#cbd5e1;
+  --link:#1d4ed8;
+  --code-bg:#f8fafc;
+  --shadow:0 4px 20px rgba(15,23,42,.10);
+}
+*{box-sizing:border-box;}
+html{font-size:var(--fs);scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+/* ---------- Barra de progreso de lectura ---------- */
+.progress-bar{
+  position:fixed;top:0;left:0;height:3px;width:0%;
+  background:linear-gradient(90deg,#3b82f6,#22d3ee);
+  z-index:1000;transition:width .1s linear;
+}
+
+/* ---------- Header ---------- */
+header.site-header{
+  position:sticky;top:0;z-index:900;
+  background:rgba(10,14,26,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+}
+body.light header.site-header{background:rgba(241,245,249,.92);}
+.header-inner{
+  max-width:1100px;margin:0 auto;padding:10px 14px;
+  display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;
+}
+.brand{font-weight:700;font-size:.95rem;letter-spacing:.2px;}
+.brand span{color:var(--link);}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.toolbar button, .toolbar input{
+  background:var(--bg-card);color:var(--text);
+  border:1px solid var(--border);border-radius:8px;
+  padding:6px 10px;font-size:.82rem;cursor:pointer;
+  font-family:inherit;
+}
+.toolbar button:hover{border-color:var(--link);color:var(--link);}
+.toolbar input{width:150px;cursor:text;}
+.toolbar input:focus{outline:none;border-color:var(--link);}
+.prog-mini{
+  font-size:.75rem;color:var(--text-dim);
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:8px;padding:6px 10px;white-space:nowrap;
+}
+
+/* ---------- Tabs ---------- */
+nav.tabs{
+  position:sticky;top:52px;z-index:880;
+  background:var(--bg);border-bottom:1px solid var(--border);
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.tabs-inner{
+  max-width:1100px;margin:0 auto;padding:0 8px;
+  display:flex;gap:2px;min-width:max-content;
+}
+.tab{
+  background:transparent;border:none;color:var(--text-dim);
+  padding:12px 14px;font-size:.82rem;font-weight:600;
+  cursor:pointer;border-bottom:3px solid transparent;
+  white-space:nowrap;font-family:inherit;letter-spacing:.3px;
+  transition:color .15s, border-color .15s;
+}
+.tab:hover{color:var(--text);}
+.tab.active{color:var(--link);border-bottom-color:var(--link);}
+
+/* ---------- Contenido ---------- */
+main{max-width:1100px;margin:0 auto;padding:24px 16px 80px;}
+.panel{display:none;animation:fade .25s ease;}
+.panel.active{display:block;}
+@keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+h1{
+  font-size:clamp(1.6rem,4.5vw,2.4rem);
+  line-height:1.2;margin:.4em 0 .3em;font-weight:800;letter-spacing:-.5px;
+}
+h2{
+  font-size:clamp(1.25rem,3.5vw,1.7rem);
+  margin:2em 0 .6em;font-weight:700;letter-spacing:-.3px;
+  padding-bottom:.3em;border-bottom:1px solid var(--border);
+}
+h3{font-size:clamp(1.05rem,3vw,1.3rem);margin:1.6em 0 .5em;font-weight:700;color:var(--link);}
+h4{font-size:1rem;margin:1.2em 0 .4em;font-weight:700;}
+p{margin:.7em 0;}
+ul,ol{padding-left:1.4em;margin:.7em 0;}
+li{margin:.35em 0;}
+a{color:var(--link);text-decoration:none;}
+a:hover{text-decoration:underline;}
+strong{color:var(--text);font-weight:700;}
+code{
+  background:var(--code-bg);padding:.15em .4em;border-radius:5px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.88em;border:1px solid var(--border);
+}
+hr{border:none;border-top:1px solid var(--border);margin:2em 0;}
+
+/* ---------- SVG hero ---------- */
+.svg-hero{
+  width:100%;max-width:820px;margin:8px auto 24px;display:block;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px;
+}
+.svg-hero svg{width:100%;height:auto;display:block;}
+
+/* ---------- Tarjetas ---------- */
+.card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px;margin:16px 0;
+  box-shadow:var(--shadow);
+}
+.card h3,.card h4{margin-top:0;}
+.grid{display:grid;gap:14px;grid-template-columns:1fr;}
+@media(min-width:640px){.grid.cols-2{grid-template-columns:1fr 1fr;}.grid.cols-3{grid-template-columns:repeat(3,1fr);}}
+
+/* ---------- Callouts ---------- */
+.callout{
+  border-left:4px solid var(--info);background:var(--bg-card);
+  border-radius:8px;padding:12px 16px;margin:16px 0;
+  border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);
+}
+.callout .ico{font-weight:700;margin-right:6px;}
+.callout.tip{border-left-color:var(--ok);}
+.callout.note{border-left-color:var(--info);}
+.callout.important{border-left-color:var(--purple);}
+.callout.warning{border-left-color:var(--warn);}
+.callout.caution{border-left-color:var(--danger);}
+.callout p:first-child{margin-top:0;}
+.callout p:last-child{margin-bottom:0;}
+
+/* ---------- Tablas ---------- */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0;border-radius:10px;border:1px solid var(--border);}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:.9rem;}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top;}
+th{background:var(--accent);color:var(--text);font-weight:700;font-size:.85rem;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:rgba(59,130,246,.06);}
+
+/* ---------- Código + botón copiar ---------- */
+.code-wrap{position:relative;margin:14px 0;}
+pre{
+  background:var(--code-bg);border:1px solid var(--border);
+  border-radius:10px;padding:14px;padding-top:44px;margin:0;
+  overflow-x:auto;font-size:.82rem;line-height:1.55;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+pre code{background:none;border:none;padding:0;font-size:1em;}
+.prompt-label{
+  display:flex;align-items:center;gap:6px;
+  font-size:.82rem;font-weight:700;color:var(--link);
+  margin:18px 0 6px;letter-spacing:.2px;
+}
+.copyBtn{
+  position:absolute;top:8px;right:8px;
+  background:var(--accent);color:var(--text);
+  border:1px solid var(--border);border-radius:7px;
+  padding:5px 11px;font-size:.72rem;font-weight:700;
+  cursor:pointer;font-family:inherit;letter-spacing:.3px;
+  transition:background .15s,color .15s;
+}
+.copyBtn:hover{background:var(--link);color:#fff;}
+.copyBtn.done{background:var(--ok);color:#fff;border-color:var(--ok);}
+
+/* ---------- Checkboxes ---------- */
+.check-list{list-style:none;padding:0;margin:14px 0;}
+.check-list li{
+  display:flex;align-items:flex-start;gap:10px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:9px;padding:10px 14px;margin:8px 0;
+  transition:border-color .15s;
+}
+.check-list li:hover{border-color:var(--link);}
+.check-list input[type=checkbox]{
+  width:20px;height:20px;flex:0 0 20px;margin-top:2px;
+  accent-color:var(--link);cursor:pointer;
+}
+.check-list label{cursor:pointer;flex:1;font-size:.94rem;}
+.check-list input:checked + label{color:var(--text-dim);text-decoration:line-through;}
+
+/* ---------- Details ---------- */
+details{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:10px;padding:12px 16px;margin:14px 0;
+}
+details summary{
+  cursor:pointer;font-weight:700;font-size:.95rem;
+  list-style:none;display:flex;align-items:center;gap:8px;
+  color:var(--warn);
+}
+details summary::-webkit-details-marker{display:none;}
+details summary::before{content:"▸";transition:transform .2s;display:inline-block;}
+details[open] summary::before{transform:rotate(90deg);}
+details[open] summary{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+/* ---------- Capturas placeholder ---------- */
+.shot{
+  border:2px dashed var(--border);border-radius:10px;
+  padding:24px 16px;text-align:center;margin:16px 0;
+  background:linear-gradient(135deg,rgba(30,58,95,.25),transparent);
+  color:var(--text-dim);font-size:.86rem;
+}
+.shot .sh-title{font-weight:700;color:var(--text);font-size:.92rem;margin-bottom:4px;}
+.shot .sh-file{font-family:ui-monospace,monospace;font-size:.78rem;opacity:.8;}
+.shot .sh-cap{font-style:italic;margin-top:8px;font-size:.82rem;}
+
+/* ---------- Diagrama texto ---------- */
+.diagram{
+  background:var(--code-bg);border:1px solid var(--border);
+  border-radius:10px;padding:16px;overflow-x:auto;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:.78rem;line-height:1.5;white-space:pre;color:var(--text);
+}
+
+/* ---------- Botón volver arriba ---------- */
+.to-top{
+  position:fixed;bottom:22px;right:18px;z-index:950;
+  width:46px;height:46px;border-radius:50%;
+  background:var(--accent);color:var(--text);border:1px solid var(--link);
+  font-size:1.2rem;cursor:pointer;display:none;
+  align-items:center;justify-content:center;
+  box-shadow:var(--shadow);font-family:inherit;
+}
+.to-top.show{display:flex;}
+.to-top:hover{background:var(--link);color:#fff;}
+
+/* ---------- Buscador: resaltado ---------- */
+mark.search-hl{background:#fde047;color:#0a0e1a;border-radius:3px;padding:0 2px;}
+mark.search-hl.cur{background:#fb923c;}
+
+/* ---------- Créditos ---------- */
+.credits-hero{text-align:center;padding:34px 16px 10px;}
+.credits-hero h2{
+  font-size:clamp(2rem,7vw,3.4rem);border:none;
+  background:linear-gradient(90deg,#60a5fa,#22d3ee);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  margin:.2em 0;letter-spacing:-1px;
+}
+.credits-role{color:var(--text-dim);font-size:1.05rem;letter-spacing:2px;text-transform:uppercase;font-weight:600;}
+.credits-date{
+  display:inline-block;margin-top:18px;
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:999px;padding:8px 20px;font-family:ui-monospace,monospace;
+  font-size:.9rem;color:var(--link);
+}
+
+/* ---------- Índice ---------- */
+.toc{list-style:none;padding:0;display:grid;gap:6px;}
+.toc a{
+  display:block;padding:9px 14px;background:var(--bg-card);
+  border:1px solid var(--border);border-radius:9px;font-size:.9rem;
+  transition:border-color .15s, transform .15s;
+}
+.toc a:hover{border-color:var(--link);transform:translateX(4px);text-decoration:none;}
+
+/* ---------- Badges ---------- */
+.badge{
+  display:inline-block;font-size:.72rem;font-weight:700;
+  padding:2px 9px;border-radius:999px;letter-spacing:.4px;
+  background:var(--accent);color:var(--text);border:1px solid var(--border);
+}
+.badge.ok{background:rgba(34,197,94,.18);color:#4ade80;border-color:rgba(34,197,94,.4);}
+.badge.no{background:rgba(239,68,68,.18);color:#f87171;border-color:rgba(239,68,68,.4);}
+
+/* ---------- Step header ---------- */
+.step-head{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px;
+  margin:2em 0 .4em;
+}
+.step-head h2{margin:0;border:none;padding:0;}
+.time-pill{
+  font-size:.76rem;font-weight:700;padding:4px 12px;border-radius:999px;
+  background:var(--accent);color:var(--link);border:1px solid var(--border);
+  white-space:nowrap;
+}
+
+/* ---------- Impresión ---------- */
+@page{size:A4 portrait;margin:14mm 12mm;}
+
+@media print{
+  html,body{
+    background:#fff !important;color:#000 !important;
+    padding:0 !important;margin:0 !important;
+    font-size:11pt !important;
+  }
+  :root, body.light{
+    --bg:#fff;--bg-card:#fff;--text:#000;--text-dim:#333;
+    --border:#bbb;--link:#0645ad;--code-bg:#f4f4f4;--accent:#e8eef7;
+  }
+  .toolbar,.tabs,.to-top,.copyBtn,.progress-bar,.svg-hero,.header-inner .toolbar,
+  nav.tabs, .search-hl, .prog-mini, .no-print{display:none !important;}
+  header.site-header{position:static !important;background:#fff !important;border-bottom:1px solid #000 !important;backdrop-filter:none !important;}
+  .header-inner{padding:0 0 6pt 0 !important;}
+  .brand{color:#000 !important;font-size:13pt !important;}
+  .brand span{color:#000 !important;}
+
+  main{max-width:100% !important;padding:0 !important;margin:0 !important;}
+
+  /* Mostrar TODOS los paneles en flujo continuo */
+  .panel{
+    display:block !important;
+    page-break-after:auto !important;
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+  .panel::before{
+    content:attr(data-print-title);
+    display:block;
+    font-size:15pt;font-weight:800;
+    margin:14pt 0 6pt;padding-bottom:3pt;
+    border-bottom:2px solid #000;
+    page-break-before:always;
+  }
+  #panel-inicio::before{page-break-before:avoid;}
+
+  h1{font-size:20pt !important;color:#000 !important;}
+  h2{font-size:14pt !important;color:#000 !important;border-bottom:1px solid #666 !important;}
+  h3{font-size:12pt !important;color:#000 !important;}
+  h4{font-size:11pt !important;color:#000 !important;}
+  p,li,td,th,label{color:#000 !important;}
+
+  a{color:#000 !important;text-decoration:underline !important;}
+  a[href]::after{content:" (" attr(href) ")";font-size:8pt;color:#444;}
+
+  /* Tarjetas y cajas */
+  .card,.callout,details,.shot,.table-wrap{
+    background:#fff !important;border:1px solid #999 !important;
+    box-shadow:none !important;color:#000 !important;
+  }
+  .callout{border-left:4px solid #000 !important;}
+
+  /* Código */
+  pre,code,.diagram{
+    background:#f4f4f4 !important;color:#000 !important;
+    border:1px solid #999 !important;
+    overflow:visible !important;white-space:pre-wrap !important;
+    word-break:break-word !important;
+    page-break-inside:avoid;
+  }
+  pre{padding:8pt !important;font-size:9pt !important;}
+
+  /* Tablas */
+  .table-wrap{overflow:visible !important;}
+  table{min-width:0 !important;width:100% !important;page-break-inside:auto;}
+  th{background:#e8eef7 !important;color:#000 !important;border:1px solid #999 !important;}
+  td{border:1px solid #999 !important;color:#000 !important;}
+  tr{page-break-inside:avoid;}
+
+  /* Details abiertos y visibles */
+  details{page-break-inside:avoid;}
+  details > summary{color:#000 !important;font-weight:700;}
+  details > summary::before{content:"▸ " !important;}
+
+  /* Checklist */
+  .check-list li{background:#fff !important;border:1px solid #999 !important;color:#000 !important;}
+  .check-list input{accent-color:#000 !important;}
+
+  /* Diagrama */
+  .diagram{color:#000 !important;}
+
+  /* SVG hero: se oculta en impresión (es decorativo) */
+  .credits-hero{padding:0 !important;}
+  .credits-hero h2{
+    background:none !important;-webkit-background-clip:initial !important;
+    background-clip:initial !important;color:#000 !important;font-size:22pt !important;
+  }
+  .credits-role{color:#000 !important;}
+  .credits-date{background:#fff !important;border:1px solid #999 !important;color:#000 !important;}
+
+  .badge{background:#eee !important;color:#000 !important;border:1px solid #999 !important;}
+  .time-pill{background:#eee !important;color:#000 !important;border:1px solid #999 !important;}
+
+  mark.search-hl{background:transparent !important;color:#000 !important;}
+
+  /* Evitar páginas casi vacías */
+  .card,.callout,details,.table-wrap,.code-wrap{page-break-inside:avoid;}
+  h2,h3,h4{page-break-after:avoid;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SVG ÚNICO REUTILIZABLE (definido una sola vez)
+     ============================================================ -->
+<svg aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="svgHero" viewBox="0 0 820 420">
+    <defs>
+      <linearGradient id="gBlue" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#1e3a5f"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+      <linearGradient id="gAccent" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#3b82f6"/>
+        <stop offset="100%" stop-color="#22d3ee"/>
+      </linearGradient>
+      <linearGradient id="gData" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#22c55e"/>
+        <stop offset="100%" stop-color="#4ade80"/>
+      </linearGradient>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- Fondo rejilla -->
+    <g opacity="0.10" stroke="#60a5fa" stroke-width="0.5">
+      <line x1="0" y1="60" x2="820" y2="60"/>
+      <line x1="0" y1="140" x2="820" y2="140"/>
+      <line x1="0" y1="220" x2="820" y2="220"/>
+      <line x1="0" y1="300" x2="820" y2="300"/>
+      <line x1="0" y1="380" x2="820" y2="380"/>
+      <line x1="100" y1="0" x2="100" y2="420"/>
+      <line x1="260" y1="0" x2="260" y2="420"/>
+      <line x1="420" y1="0" x2="420" y2="420"/>
+      <line x1="580" y1="0" x2="580" y2="420"/>
+      <line x1="740" y1="0" x2="740" y2="420"/>
+    </g>
+
+    <!-- Título del diagrama -->
+    <text x="410" y="34" text-anchor="middle" fill="#60a5fa" font-family="monospace" font-size="15" font-weight="700" letter-spacing="2">
+      FLUJO DE TU WEB DINÁMICA
+    </text>
+
+    <!-- ============ NODOS SUPERIORES ============ -->
+    <g>
+      <!-- Google AI Studio -->
+      <rect x="40" y="70" width="170" height="70" rx="12" fill="url(#gBlue)" stroke="#3b82f6" stroke-width="2"/>
+      <text x="125" y="100" text-anchor="middle" fill="#93c5fd" font-size="20" font-family="sans-serif">🤖</text>
+      <text x="125" y="124" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700" font-family="sans-serif">Google AI Studio</text>
+
+      <!-- GitHub -->
+      <rect x="250" y="70" width="170" height="70" rx="12" fill="url(#gBlue)" stroke="#8b5cf6" stroke-width="2"/>
+      <text x="335" y="100" text-anchor="middle" fill="#c4b5fd" font-size="20" font-family="sans-serif">🐙</text>
+      <text x="335" y="124" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700" font-family="sans-serif">GitHub</text>
+
+      <!-- Vercel -->
+      <rect x="460" y="70" width="170" height="70" rx="12" fill="url(#gBlue)" stroke="#22d3ee" stroke-width="2"/>
+      <text x="545" y="100" text-anchor="middle" fill="#67e8f9" font-size="20" font-family="sans-serif">▲</text>
+      <text x="545" y="124" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700" font-family="sans-serif">Vercel</text>
+    </g>
+
+    <!-- ============ NODOS INFERIORES ============ -->
+    <g>
+      <!-- Visitante -->
+      <rect x="40" y="300" width="170" height="70" rx="12" fill="url(#gBlue)" stroke="#f59e0b" stroke-width="2"/>
+      <text x="125" y="330" text-anchor="middle" fill="#fcd34d" font-size="20" font-family="sans-serif">🧑‍💻</text>
+      <text x="125" y="354" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700" font-family="sans-serif">Visitante</text>
+
+      <!-- Supabase -->
+      <rect x="460" y="300" width="170" height="70" rx="12" fill="url(#gBlue)" stroke="#22c55e" stroke-width="2"/>
+      <text x="545" y="330" text-anchor="middle" fill="#4ade80" font-size="20" font-family="sans-serif">🗄️</text>
+      <text x="545" y="354" text-anchor="middle" fill="#e2e8f0" font-size="13" font-weight="700" font-family="sans-serif">Supabase</text>
+    </g>
+
+    <!-- ============ FLECHAS ============ -->
+    <defs>
+      <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L9,3 z" fill="#3b82f6"/>
+      </marker>
+      <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L9,3 z" fill="#22c55e"/>
+      </marker>
+      <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+        <path d="M0,0 L0,6 L9,3 z" fill="#f59e0b"/>
+      </marker>
+    </defs>
+
+    <!-- AI Studio -> GitHub -->
+    <path id="pathA" d="M210,105 L250,105" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+    <!-- GitHub -> Vercel -->
+    <path id="pathB" d="M420,105 L460,105" stroke="#3b82f6" stroke-width="2" fill="none" marker-end="url(#arrowBlue)"/>
+    <!-- Vercel -> Supabase (vertical) -->
+    <path id="pathC" d="M545,140 L545,300" stroke="#22c55e" stroke-width="2" fill="none" marker-end="url(#arrowGreen)"/>
+    <!-- Visitante -> Vercel (curva) -->
+    <path id="pathD" d="M210,335 C 320,335 320,180 460,180" stroke="#f59e0b" stroke-width="2" fill="none" stroke-dasharray="6 4" marker-end="url(#arrowAmber)"/>
+
+    <!-- Etiquetas de flechas -->
+    <text x="230" y="98" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">código</text>
+    <text x="440" y="98" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">deploy auto</text>
+    <text x="556" y="225" text-anchor="start" fill="#94a3b8" font-size="10" font-family="monospace">datos + clave pública</text>
+    <text x="300" y="200" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="monospace">formulario</text>
+
+    <!-- ============ PAQUETES ANIMADOS ============ -->
+    <!-- Paquete 1: AI -> GitHub -->
+    <circle r="6" fill="#60a5fa" filter="url(#glow)">
+      <animateMotion dur="2.4s" repeatCount="indefinite">
+        <mpath href="#pathA"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Paquete 2: GitHub -> Vercel -->
+    <circle r="6" fill="#a78bfa" filter="url(#glow)">
+      <animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite">
+        <mpath href="#pathB"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Paquete 3: Vercel -> Supabase -->
+    <circle r="6" fill="#4ade80" filter="url(#glow)">
+      <animateMotion dur="2.8s" begin="1.2s" repeatCount="indefinite">
+        <mpath href="#pathC"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" dur="2.8s" begin="1.2s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Paquete 4: Visitante -> Vercel -->
+    <circle r="6" fill="#fbbf24" filter="url(#glow)">
+      <animateMotion dur="3.2s" begin="0.4s" repeatCount="indefinite">
+        <mpath href="#pathD"/>
+      </animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" dur="3.2s" begin="0.4s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Pulso en Vercel (la web publicada) -->
+    <circle cx="545" cy="105" r="45" fill="none" stroke="#22d3ee" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="r" values="45;62;45" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Pulso en Supabase (la base de datos) -->
+    <circle cx="545" cy="335" r="45" fill="none" stroke="#22c55e" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="r" values="45;62;45" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" begin="1.5s" repeatCount="indefinite"/>
+    </circle>
+
+    <!-- Leyenda inferior -->
+    <text x="410" y="404" text-anchor="middle" fill="#64748b" font-size="10.5" font-family="monospace">
+      Desarrollo → Publicación → Datos · todo gratis
+    </text>
+  </symbol>
+</svg>
+
+<!-- ============================================================ -->
+
+<div class="progress-bar" id="progressBar"></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">🚀 <span>Web dinámica</span> gratis</div>
+    <div class="toolbar">
+      <input type="search" id="searchInput" placeholder="Buscar…" aria-label="Buscar en el tutorial">
+      <button id="btnSearchClear" title="Limpiar búsqueda">✕</button>
+      <button id="btnFontDown" title="Reducir texto">A−</button>
+      <button id="btnFontUp" title="Aumentar texto">A+</button>
+      <button id="btnTheme" title="Modo claro / oscuro">☀️</button>
+      <button id="btnPrint" title="Imprimir o guardar como PDF">🖨️</button>
+      <span class="prog-mini" id="progMini">0%</span>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="Secciones del tutorial">
+    <div class="tabs-inner">
+      <button class="tab active" data-tab="panel-inicio">INICIO</button>
+      <button class="tab" data-tab="panel-conceptos">CONCEPTOS</button>
+      <button class="tab" data-tab="panel-procedimiento">PROCEDIMIENTO</button>
+      <button class="tab" data-tab="panel-practica">PRÁCTICA</button>
+      <button class="tab" data-tab="panel-errores">ERRORES</button>
+      <button class="tab" data-tab="panel-resumen">RESUMEN</button>
+      <button class="tab" data-tab="panel-fuentes">FUENTES</button>
+      <button class="tab" data-tab="panel-creditos">CRÉDITOS</button>
+    </div>
+  </nav>
+</header>
+
+<main>
+
+<!-- ============================================================
+     PANEL: INICIO
+     ============================================================ -->
+<section class="panel active" id="panel-inicio" data-print-title="INICIO">
+
+  <h1>🚀 Crea y publica tu propia web con base de datos, gratis</h1>
+  <p style="font-size:1.05rem;color:var(--text-dim);margin-top:0;">
+    Guía paso a paso para principiantes absolutos con <strong>Google AI Studio</strong>,
+    <strong>GitHub</strong>, <strong>Vercel</strong> y <strong>Supabase</strong>.
+  </p>
+
+  <!-- SVG animado (mismo símbolo que en Créditos) -->
+  <div class="svg-hero">
+    <svg role="img" aria-label="Diagrama animado del flujo de trabajo de la web dinámica">
+      <use href="#svgHero"></use>
+    </svg>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span><strong>Para quién es esta guía.</strong> Para cualquier persona,
+    <strong>sin necesidad de saber programar</strong> ni de haber usado antes ninguna de estas herramientas.
+    Todo se explica desde cero, con palabras sencillas. Si algo te suena a chino, no te preocupes:
+    cada concepto nuevo se explica cuando aparece y hay un glosario al final.</p>
+  </div>
+
+  <h2>🎯 Qué vas a conseguir al terminar</h2>
+  <div class="grid cols-2">
+    <div class="card">
+      <h4>🌐 Una web publicada</h4>
+      <p>Una <strong>página web profesional</strong> en internet, con su propia dirección
+      (por ejemplo <code>https://tu-proyecto.vercel.app</code>).</p>
+    </div>
+    <div class="card">
+      <h4>📝 Un formulario funcional</h4>
+      <p>Un <strong>formulario de contacto</strong> que guarda en una base de datos los datos de
+      las personas que lo rellenan.</p>
+    </div>
+    <div class="card">
+      <h4>🤖 Mejoras con IA</h4>
+      <p>Un sistema para <strong>modificar tu web con inteligencia artificial</strong> y que los
+      cambios se publiquen solos.</p>
+    </div>
+    <div class="card">
+      <h4>💸 Coste cero</h4>
+      <p>Todo ello <strong>sin pagar nada</strong> y sin instalar programas en tu ordenador.</p>
+    </div>
+  </div>
+
+  <h2>⏱️ Tiempo estimado</h2>
+  <p>Entre <strong>2 y 4 horas</strong> la primera vez, con calma. Puedes parar al final de cualquier
+  paso y retomarlo otro día.</p>
+
+  <div class="callout important">
+    <p><span class="ico">❗</span><strong>Lee esto antes de empezar (2 minutos).</strong> Hay tres cosas
+    del mundo real que conviene saber desde el principio:</p>
+    <ol>
+      <li><strong>Vercel (plan gratuito Hobby) es solo para uso personal y no comercial.</strong>
+      Según las normas de Vercel, se considera comercial cualquier web publicada con el fin de obtener
+      un beneficio económico. Nuestro ejemplo (la web de una consultoría) sirve para
+      <strong>aprender y practicar</strong>. Si vas a usarla para captar clientes de un negocio real,
+      necesitarás el plan de pago de Vercel u otro servicio de hosting cuyas condiciones lo permitan.</li>
+      <li><strong>Supabase (plan gratuito) pausa los proyectos con poca actividad</strong>
+      (aproximadamente tras una semana). No se pierde nada: se reactiva con un botón.</li>
+      <li><strong>Supabase está cambiando el nombre de sus claves</strong> (la clásica «anon key»
+      está siendo sustituida por la «publishable key») <strong>y desde 2026 las tablas nuevas no son
+      accesibles desde la web hasta que das permiso expreso.</strong> Esta guía ya está adaptada
+      a ambos cambios.</li>
+    </ol>
+  </div>
+
+  <h2>✅ Requisitos previos</h2>
+  <p>No necesitas saber programar. Necesitas:</p>
+  <ul>
+    <li>💻 Un ordenador (Windows, Mac o Linux) con conexión a internet.</li>
+    <li>🌐 Un navegador moderno (Chrome, Edge, Firefox o Safari). Se recomienda <strong>Google Chrome</strong>.</li>
+    <li>📧 Una dirección de correo <strong>Gmail</strong> (si no la tienes, en el Paso 0 verás cómo crearla).</li>
+    <li>⏳ Entre 2 y 4 horas libres y ganas de aprender.</li>
+    <li>📝 Un bloc de notas (el del ordenador vale) para guardar temporalmente algunos datos.</li>
+  </ul>
+
+  <h2>🧭 Cómo usar este tutorial</h2>
+  <ul>
+    <li><strong>Sigue los pasos en orden.</strong> Cada uno se apoya en el anterior.</li>
+    <li><strong>Copia y pega los textos exactos.</strong> Los prompts aparecen en cajas con el botón
+    <span class="badge">COPIAR</span>.</li>
+    <li><strong>Al final de cada paso hay una comprobación ✅.</strong> No sigas hasta marcarla entera.</li>
+    <li><strong>Si algo falla, abre el desplegable 🛠️</strong> de ese paso o consulta la pestaña
+    <em>ERRORES</em>.</li>
+    <li>Usa el <strong>buscador</strong> de arriba para encontrar cualquier término al instante.</li>
+    <li>Tus <strong>checklists y preferencias se guardan</strong> en este navegador.</li>
+  </ul>
+
+  <h2>📑 Índice de secciones</h2>
+  <ul class="toc">
+    <li><a href="#" data-goto="panel-conceptos">📚 CONCEPTOS — Web estática vs dinámica, las 4 herramientas</a></li>
+    <li><a href="#" data-goto="panel-procedimiento">🛠️ PROCEDIMIENTO — Paso 0 al Paso 6, completo</a></li>
+    <li><a href="#" data-goto="panel-practica">🧪 PRÁCTICA — Ejercicios y pruebas guiadas</a></li>
+    <li><a href="#" data-goto="panel-errores">🚨 ERRORES — Problemas frecuentes y soluciones</a></li>
+    <li><a href="#" data-goto="panel-resumen">📋 RESUMEN — Rutina, checklist final y glosario</a></li>
+    <li><a href="#" data-goto="panel-fuentes">🔗 FUENTES — Enlaces oficiales</a></li>
+    <li><a href="#" data-goto="panel-creditos">👤 CRÉDITOS — Autoría</a></li>
+  </ul>
+
+  <h2>🔒 Las tres reglas de oro de seguridad</h2>
+  <div class="card">
+    <ol>
+      <li>🔒 <strong>Tu repositorio de GitHub es PRIVADO.</strong></li>
+      <li>🔒 <strong>Ninguna clave secreta se escribe en el código ni en los mensajes a la IA.</strong>
+      Se guardan como variables de entorno en Vercel.</li>
+      <li>🔒 <strong>La clave <code>service_role</code> (o «secret») de Supabase NO se usa nunca en la web.</strong>
+      Solo se usan la URL del proyecto y la clave pública (publishable).</li>
+    </ol>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: CONCEPTOS
+     ============================================================ -->
+<section class="panel" id="panel-conceptos" data-print-title="CONCEPTOS">
+
+  <h1>📚 Conceptos previos</h1>
+  <p style="color:var(--text-dim);">Antes de tocar nada, entender <em>qué</em> vamos a construir y
+  <em>por qué</em> con estas cuatro herramientas.</p>
+
+  <h2>1. ¿Web estática o web dinámica?</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th></th><th>Web estática</th><th>Web dinámica (con base de datos)</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Qué es</strong></td>
+          <td>Una página que siempre muestra lo mismo a todo el mundo.</td>
+          <td>Una página que puede <strong>recibir, guardar y mostrar información</strong> que cambia.</td>
+        </tr>
+        <tr>
+          <td><strong>Ejemplo cotidiano</strong></td>
+          <td>Un folleto impreso: lo lees, pero no puedes escribir en él.</td>
+          <td>Un libro de visitas: la gente deja sus datos y quedan guardados.</td>
+        </tr>
+        <tr>
+          <td><strong>¿Puede guardar datos de visitantes?</strong></td>
+          <td><span class="badge no">No</span></td>
+          <td><span class="badge ok">Sí</span></td>
+        </tr>
+        <tr>
+          <td><strong>Ejemplo</strong></td>
+          <td>Una página con tu presentación.</td>
+          <td>Una web con formulario de contacto cuyos mensajes llegan a una tabla.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Nuestra web será dinámica:</strong> cuando alguien rellene el formulario, sus datos viajarán
+  por internet hasta una <strong>base de datos</strong> (una especie de hoja de cálculo gigante y segura
+  en la nube) donde tú podrás consultarlos.</p>
+
+  <h2>2. Las 4 herramientas y qué hace cada una</h2>
+  <p>Imagina que estás montando una tienda:</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Herramienta</th><th>Qué hace</th><th>Analogía</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Google AI Studio</strong></td>
+          <td>Diseña la web y escribe el código por ti a partir de lo que le pidas con texto.</td>
+          <td>El <strong>arquitecto</strong> que dibuja los planos.</td>
+        </tr>
+        <tr>
+          <td><strong>GitHub</strong></td>
+          <td>Guarda el código en la nube, con historial de todos los cambios.</td>
+          <td>El <strong>archivo</strong> donde se guardan los planos de forma ordenada y segura.</td>
+        </tr>
+        <tr>
+          <td><strong>Vercel</strong></td>
+          <td>Publica la web en internet y la mantiene en línea.</td>
+          <td>El <strong>local comercial</strong> donde los clientes entran a ver tu tienda.</td>
+        </tr>
+        <tr>
+          <td><strong>Supabase</strong></td>
+          <td>Guarda en una base de datos la información que envían los visitantes.</td>
+          <td>El <strong>buzón con archivador</strong> donde llegan y se guardan los mensajes.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>3. Esquema del flujo de trabajo</h2>
+
+  <div class="diagram">[ FLUJO DEL CÓDIGO ]
+
+  Google AI Studio ──(envía el código)──> GitHub (repositorio privado)
+        ▲                                         │
+        │ (pides correcciones                     │ (despliegue automático)
+        │  con texto)                             ▼
+        └──────────────────────────────  Vercel (la web en internet)
+                                                  │
+                                                  │ (conexión con claves guardadas
+                                                  │  como variables de entorno)
+[ FLUJO DE LOS DATOS ]                            ▼
+  Visitante (rellena el formulario) ────────> Supabase (base de datos)</div>
+
+  <p><strong>Cómo leer el esquema:</strong></p>
+  <ol>
+    <li><strong>Desarrollo:</strong> el código se crea en Google AI Studio y se envía a GitHub.</li>
+    <li><strong>Publicación:</strong> Vercel vigila GitHub; cuando hay cambios, actualiza la web pública sola.</li>
+    <li><strong>Datos:</strong> cuando un visitante rellena el formulario, los datos viajan a Supabase
+    usando la URL del proyecto y una clave pública que guardas en Vercel como variables de entorno.</li>
+  </ol>
+
+  <h2>4. ¿Qué es gratis y qué límites tiene?</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Servicio</th><th>Plan gratuito</th><th>Lo que debes saber</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Google AI Studio</strong></td><td>Uso gratuito para crear aplicaciones</td><td>Tiene cuotas de uso que pueden cambiar.</td></tr>
+        <tr><td><strong>GitHub</strong></td><td>Free</td><td>Permite repositorios privados.</td></tr>
+        <tr><td><strong>Vercel</strong></td><td>Hobby</td><td><strong>Solo uso personal y no comercial.</strong> Tiene límites mensuales de uso.</td></tr>
+        <tr><td><strong>Supabase</strong></td><td>Free</td><td>Número limitado de proyectos gratuitos y de almacenamiento (cifras orientativas: 2 proyectos y 500 MB de base de datos). <strong>Se pausa tras unos 7 días de poca actividad.</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span>Las cifras y condiciones de los planes gratuitos cambian con el tiempo.
+    Compruébalas en las páginas oficiales (pestaña <em>FUENTES</em>) antes de lanzar una web definitiva.</p>
+  </div>
+
+  <h2>5. Los cinco tipos de aviso que verás</h2>
+  <div class="callout tip"><p><span class="ico">💡</span><strong>Consejo (TIP).</strong> Algo que te hará la vida más fácil.</p></div>
+  <div class="callout note"><p><span class="ico">ℹ️</span><strong>Nota (NOTE).</strong> Información útil para entender el contexto.</p></div>
+  <div class="callout important"><p><span class="ico">❗</span><strong>Importante (IMPORTANT).</strong> Algo que conviene no saltarse.</p></div>
+  <div class="callout warning"><p><span class="ico">⚠️</span><strong>Advertencia (WARNING).</strong> Aquí hay riesgo de romper algo.</p></div>
+  <div class="callout caution"><p><span class="ico">🔒</span><strong>Seguridad (CAUTION).</strong> Regla de seguridad crítica.</p></div>
+
+  <h2>6. Las tres reglas de oro de seguridad</h2>
+  <div class="card">
+    <ol>
+      <li>🔒 <strong>Tu repositorio de GitHub es PRIVADO.</strong></li>
+      <li>🔒 <strong>Ninguna clave secreta se escribe en el código ni en los mensajes a la IA.</strong></li>
+      <li>🔒 <strong>La clave <code>service_role</code> de Supabase NO se usa nunca en la web.</strong></li>
+    </ol>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: PROCEDIMIENTO
+     ============================================================ -->
+<section class="panel" id="panel-procedimiento" data-print-title="PROCEDIMIENTO">
+
+  <h1>🛠️ Procedimiento paso a paso</h1>
+  <p style="color:var(--text-dim);">Del Paso 0 al Paso 6. Síguelos en orden. Cada uno termina con una
+  comprobación ✅ que debes marcar antes de continuar.</p>
+
+  <!-- ================= PASO 0 ================= -->
+  <div class="step-head">
+    <h2>Paso 0: Prepara tus cuentas gratuitas</h2>
+    <span class="time-pill">⏱️ 15-20 min</span>
+  </div>
+  <p>Necesitas <strong>cuatro cuentas gratuitas</strong>. Para simplificar, usaremos tu cuenta de Google
+  y tu cuenta de GitHub para entrar en las demás, de modo que <strong>no tengas que recordar muchas
+  contraseñas</strong>.</p>
+
+  <h3>Paso 0.1: Cuenta de Google (Gmail)</h3>
+  <ol>
+    <li>Si ya tienes Gmail, pasa al siguiente paso.</li>
+    <li>Si no, entra en <strong>https://accounts.google.com/signup</strong> y sigue las instrucciones.</li>
+    <li>Anota tu correo y tu contraseña en un lugar seguro.</li>
+  </ol>
+
+  <h3>Paso 0.2: Cuenta de GitHub</h3>
+  <ol>
+    <li>Entra en <strong>https://github.com</strong> y pulsa <strong>Sign up</strong> (Registrarse).</li>
+    <li>Escribe tu correo, crea una contraseña y elige un <strong>nombre de usuario</strong>
+    (por ejemplo <code>maria-garcia-web</code>). Piensa que puede aparecer en tus direcciones web.</li>
+    <li>Resuelve la verificación que te pidan y confirma tu correo con el código que recibirás.</li>
+    <li>Cuando te pregunten por el plan, elige siempre el <strong>gratuito (Free)</strong>.</li>
+  </ol>
+
+  <h3>Paso 0.3: Cuenta de Vercel</h3>
+  <ol>
+    <li>Entra en <strong>https://vercel.com</strong> y pulsa <strong>Sign Up</strong>.</li>
+    <li>Cuando te pida el tipo de plan, elige <strong>Hobby</strong> (el plan gratuito, para uso personal).</li>
+    <li>Escribe tu nombre cuando lo pida.</li>
+    <li>En el método de acceso, elige <strong>Continue with GitHub</strong> y autoriza el acceso.</li>
+  </ol>
+
+  <h3>Paso 0.4: Cuenta de Supabase</h3>
+  <ol>
+    <li>Entra en <strong>https://supabase.com</strong> y pulsa <strong>Start your project</strong>.</li>
+    <li>Elige <strong>Continue with GitHub</strong> y autoriza el acceso.</li>
+    <li>Es posible que te pida crear una <strong>organización</strong>: ponle cualquier nombre y elige
+    el plan <strong>Free</strong>.</li>
+  </ol>
+
+  <h3>Paso 0.5: Crea tu «ficha del proyecto»</h3>
+  <p>Crea en tu ordenador una carpeta llamada <code>Mi web dinámica</code> y dentro un archivo de texto
+  llamado <code>ficha-del-proyecto.txt</code>. Copia esta plantilla y ve rellenándola:</p>
+
+  <div class="prompt-label">📋 Prompt para copiar — Plantilla de la ficha del proyecto</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>FICHA DEL PROYECTO
+==================
+Nombre del proyecto: autoia-consultoria
+
+[GitHub]
+Usuario de GitHub:
+Repositorio (privado):
+
+[Vercel]
+Dirección pública (.vercel.app):
+
+[Supabase]
+Nombre del proyecto:
+Project URL (dirección del proyecto):
+Clave pública (publishable key):
+
+NUNCA escribas aquí (ni en ningún otro sitio sin protección):
+- La clave secreta / service_role
+- La contraseña de la base de datos</code></pre>
+  </div>
+
+  <div class="callout tip">
+    <p><span class="ico">💡</span>Guarda también en esa carpeta las capturas de pantalla que vayas haciendo.</p>
+  </div>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span><strong>Tip de seguridad:</strong> activa la <strong>verificación en
+    dos pasos</strong> en tu cuenta de GitHub y en tu cuenta de Google. Es lo mejor que puedes hacer
+    para proteger tus proyectos.</p>
+  </div>
+
+  <h4>✅ Comprobación del Paso 0</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p0-1" data-ck="p0-1"><label for="ck-p0-1">Puedo entrar en mi cuenta de Google.</label></li>
+    <li><input type="checkbox" id="ck-p0-2" data-ck="p0-2"><label for="ck-p0-2">Puedo entrar en github.com con mi usuario.</label></li>
+    <li><input type="checkbox" id="ck-p0-3" data-ck="p0-3"><label for="ck-p0-3">Puedo entrar en vercel.com y veo mi panel.</label></li>
+    <li><input type="checkbox" id="ck-p0-4" data-ck="p0-4"><label for="ck-p0-4">Puedo entrar en supabase.com y veo mi panel.</label></li>
+    <li><input type="checkbox" id="ck-p0-5" data-ck="p0-5"><label for="ck-p0-5">Tengo creada mi ficha del proyecto.</label></li>
+  </ul>
+
+  <hr>
+
+  <!-- ================= PASO 1 ================= -->
+  <div class="step-head">
+    <h2>Paso 1: Crea y diseña la web con Google AI Studio</h2>
+    <span class="time-pill">⏱️ 30-45 min</span>
+  </div>
+  <p><strong>Qué es Google AI Studio:</strong> una herramienta gratuita de Google donde describes con
+  palabras la web que quieres y la inteligencia artificial la construye.</p>
+
+  <h3>Paso 1.1: Entra en Google AI Studio</h3>
+  <ol>
+    <li>Abre tu navegador y ve a <strong>https://aistudio.google.com</strong>.</li>
+    <li>Inicia sesión con tu cuenta de Google.</li>
+    <li>Si aparecen <strong>términos y condiciones</strong>, léelos y acepta para continuar.</li>
+    <li>En el menú lateral izquierdo, busca la opción <strong>Build</strong> (Crear aplicaciones).</li>
+  </ol>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span>Los nombres de los menús y botones de estas herramientas cambian de
+    vez en cuando. Si no ves exactamente el mismo texto, busca algo equivalente.</p>
+  </div>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 1.1</div>
+    <div class="sh-file">capturas/captura-1-1.png</div>
+    <div class="sh-cap">Pantalla principal de Google AI Studio (modo Build) con el prompt inicial escrito.
+    Resaltar el botón de enviar y el panel de código/vista previa.</div>
+  </div>
+
+  <h3>Paso 1.2: Escribe el prompt inicial</h3>
+  <p><strong>¿Qué es un prompt?</strong> Es el texto con el que le explicas a la inteligencia artificial
+  lo que quieres. Cuanto más claro y detallado, mejor resultado.</p>
+
+  <div class="callout important">
+    <p><span class="ico">❗</span><strong>Por qué este prompt incluye «requisitos técnicos».</strong>
+    Google AI Studio puede crear aplicaciones con una parte de servidor (backend). Para publicar tu web
+    de forma sencilla y gratuita en Vercel, necesitamos una web <strong>solo de «frontend»</strong>.
+    Por eso lo pedimos de forma expresa.</p>
+  </div>
+
+  <div class="prompt-label">📋 Prompt para copiar — Prompt inicial de la landing page</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Crea una landing page moderna, profesional y responsive (que se vea bien en móvil y en ordenador) en español para una consultoría de automatización e inteligencia artificial para empresas llamada "AutoIA Consultoría".
+
+Requisitos técnicos:
+- Crea una aplicación SOLO de frontend con React y Vite, que se pueda publicar como sitio estático. No crees servidor ni backend propio.
+- No uses la API de Gemini ni ninguna otra API de inteligencia artificial dentro de la web.
+- No incluyas inicio de sesión ni cuentas de usuario.
+
+La página debe tener estas secciones:
+1. Cabecera con el nombre de la empresa y un menú sencillo.
+2. Sección principal (hero) con un titular potente, un subtítulo explicativo y un botón de llamada a la acción.
+3. Sección de servicios con 3 tarjetas (por ejemplo: automatización de procesos, chatbots con IA, análisis de datos).
+4. Sección de beneficios o "por qué elegirnos".
+5. Un formulario de contacto visual con estos campos:
+   - Nombre
+   - Apellido
+   - Teléfono
+   - Correo electrónico
+   - Tamaño de la empresa (lista desplegable: 1-10 empleados, 11-50, 51-200, más de 200)
+   - Área de interés (lista desplegable: Automatización de procesos, Chatbots con IA, Análisis de datos, Formación, Otro)
+   - Botón de enviar con el texto "Solicitar consultoría gratuita"
+6. Un pie de página con datos de contacto ficticios.
+
+Estilo: diseño limpio, mucho espacio en blanco, tipografía moderna y colores profesionales. Por ahora el formulario solo debe validar los campos y mostrar un mensaje de "Gracias, te contactaremos pronto" al enviarlo (aún no está conectado a ninguna base de datos).</code></pre>
+  </div>
+
+  <p>La IA tardará unos instantes. Verás dos zonas importantes:</p>
+  <ul>
+    <li><strong>Vista previa (Preview):</strong> cómo se ve tu web.</li>
+    <li><strong>Código (Code):</strong> los archivos creados. <strong>No necesitas entenderlos ni tocarlos.</strong></li>
+  </ul>
+
+  <h3>Paso 1.3: Refina el diseño conversando</h3>
+  <p>Ahora pide cambios, <strong>de uno en uno o en pequeños grupos</strong>, escribiendo en el mismo chat.</p>
+
+  <div class="prompt-label">📋 Prompt para copiar — Cambiar los colores</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Cambia la paleta de colores: usa tonos azul marino y blanco como base, con detalles en gris claro. Mantén un aspecto sobrio y profesional.</code></pre>
+  </div>
+
+  <div class="prompt-label">📋 Prompt para copiar — Poner los botones en verde</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Haz que todos los botones principales sean de color verde (un verde vivo pero elegante), con texto blanco, esquinas redondeadas y un efecto suave al pasar el ratón por encima.</code></pre>
+  </div>
+
+  <div class="prompt-label">📋 Prompt para copiar — Cambiar la ubicación del formulario</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Mueve el formulario de contacto a la parte superior de la página, en la sección principal, situado a la derecha del titular. En móvil, que aparezca justo debajo del titular.</code></pre>
+  </div>
+
+  <div class="prompt-label">📋 Prompt para copiar — Ajustar los titulares</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Cambia el titular principal por: "Automatiza tu empresa con inteligencia artificial". Cambia el subtítulo por: "Ahorra tiempo, reduce costes y haz crecer tu negocio con soluciones a medida. Cuéntanos tu caso y te asesoramos sin compromiso."</code></pre>
+  </div>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 1.2</div>
+    <div class="sh-file">capturas/captura-1-2.png</div>
+    <div class="sh-cap">Chat de AI Studio con la instrucción de cambiar los botones a verde y el cambio
+    reflejado en la vista previa.</div>
+  </div>
+
+  <div class="callout tip">
+    <p><span class="ico">💡</span><strong>Cómo pedir bien los cambios:</strong></p>
+    <ul>
+      <li>Sé <strong>concreto</strong>: «botón verde con texto blanco» es mejor que «mejora el botón».</li>
+      <li>Pide <strong>pocas cosas cada vez</strong>: así es más fácil detectar qué falla.</li>
+      <li>Si algo no queda bien: <em>«Deshaz el último cambio»</em>.</li>
+      <li>Puedes <strong>personalizar los textos</strong> con los datos de tu propio negocio.</li>
+    </ul>
+  </div>
+
+  <h3>Paso 1.4: Revisa tu web antes de seguir</h3>
+  <ol>
+    <li><strong>Móvil:</strong> comprueba cómo se ve en pantalla estrecha.</li>
+    <li><strong>Formulario:</strong> rellénalo con datos inventados y comprueba el mensaje de agradecimiento.</li>
+    <li><strong>Textos:</strong> busca erratas o textos de relleno que quieras cambiar.</li>
+  </ol>
+
+  <h4>✅ Comprobación del Paso 1</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p1-1" data-ck="p1-1"><label for="ck-p1-1">Veo mi web en la vista previa de AI Studio.</label></li>
+    <li><input type="checkbox" id="ck-p1-2" data-ck="p1-2"><label for="ck-p1-2">El formulario tiene todos los campos pedidos.</label></li>
+    <li><input type="checkbox" id="ck-p1-3" data-ck="p1-3"><label for="ck-p1-3">Los botones son verdes y el formulario está donde quería.</label></li>
+    <li><input type="checkbox" id="ck-p1-4" data-ck="p1-4"><label for="ck-p1-4">Estoy satisfecho/a con la primera versión.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 1</summary>
+    <ul>
+      <li><strong>No encuentro «Build» en AI Studio:</strong> busca «Build», «Apps» o «Crear app». Actualiza la página o revisa la sesión.</li>
+      <li><strong>La vista previa se queda en blanco:</strong> escribe <em>«La vista previa no carga o muestra un error. Revísalo y corrígelo»</em>.</li>
+      <li><strong>El resultado no se parece a lo que quería:</strong> no empieces de cero; escribe un cambio concreto cada vez.</li>
+    </ul>
+  </details>
+
+  <hr>
+
+  <!-- ================= PASO 2 ================= -->
+  <div class="step-head">
+    <h2>Paso 2: Guarda el código en GitHub</h2>
+    <span class="time-pill">⏱️ 10-15 min</span>
+  </div>
+  <p><strong>Qué es GitHub:</strong> un servicio en la nube donde se guardan proyectos. Cada proyecto
+  vive en un <strong>repositorio</strong> y GitHub recuerda <strong>todos los cambios</strong>.</p>
+
+  <h3>Paso 2.1: Conecta AI Studio con GitHub</h3>
+  <ol>
+    <li>En Google AI Studio, busca el <strong>icono de GitHub</strong> (silueta de gato), normalmente
+    arriba a la derecha. También en <strong>Settings</strong> → pestaña <strong>GitHub</strong>.</li>
+    <li>Púlsalo. La primera vez te pedirá <strong>iniciar sesión en GitHub y autorizar</strong>. Acepta.</li>
+    <li>Si aparece una ventana de permisos, comprueba que estás en tu cuenta y autoriza.</li>
+  </ol>
+
+  <h3>Paso 2.2: Crea un repositorio privado y envía el primer commit</h3>
+  <ol>
+    <li>Escribe el <strong>nombre del repositorio</strong>. Minúsculas y guiones, sin espacios ni tildes:</li>
+  </ol>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>autoia-consultoria</code></pre>
+  </div>
+  <ol start="2">
+    <li><strong>MUY IMPORTANTE:</strong> en la visibilidad, elige <strong>Private (Privado)</strong>.</li>
+    <li>Pulsa el botón para crear el repositorio y enviar el código.</li>
+    <li>Espera al mensaje de éxito («Successfully pushed to GitHub»).</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 2.1</div>
+    <div class="sh-file">capturas/captura-2-1.png</div>
+    <div class="sh-cap">Pantalla de sincronización con GitHub. Resaltar la opción «Private».</div>
+  </div>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span>Un repositorio <strong>privado</strong> solo lo ves tú.
+    Un repositorio <strong>público</strong> puede ser leído por cualquiera. Para este tutorial,
+    elige siempre privado.</p>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span><strong>¿Qué es un commit?</strong> Es como «guardar una foto» del
+    estado del proyecto en un momento concreto, con una nota que explica qué cambió.</p>
+  </div>
+
+  <h3>Paso 2.3: Comprueba que el código llegó</h3>
+  <ol>
+    <li>Abre <strong>https://github.com</strong> e inicia sesión.</li>
+    <li>Entra en <strong>Your repositories</strong>.</li>
+    <li>Abre <code>autoia-consultoria</code>. Deberías ver archivos y un contador de commits.</li>
+    <li>Pulsa sobre el número de commits para ver el <strong>historial de cambios</strong>.</li>
+    <li>Anota en tu ficha del proyecto el nombre del repositorio.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 2.2</div>
+    <div class="sh-file">capturas/captura-2-2.png</div>
+    <div class="sh-cap">Vista del repositorio en GitHub con la lista de archivos y el historial de commits.</div>
+  </div>
+
+  <h3>Paso 2.4: Plan B si no encuentras la conexión con GitHub</h3>
+  <ol>
+    <li>En AI Studio, busca la opción de <strong>descargar</strong> el proyecto (ZIP).</li>
+    <li>Descomprime el ZIP.</li>
+    <li>En GitHub, pulsa <strong>New</strong>, ponle <code>autoia-consultoria</code>, marca <strong>Private</strong> y créalo.</li>
+    <li>En el repositorio vacío, elige <strong>uploading an existing file</strong> y arrastra el
+    <strong>contenido</strong> de la carpeta descomprimida.</li>
+    <li>Pulsa <strong>Commit changes</strong>.</li>
+  </ol>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span>Sube el <strong>contenido</strong> de la carpeta, no la carpeta entera.
+    Si no, Vercel no encontrará el proyecto en la raíz del repositorio.</p>
+  </div>
+
+  <h4>✅ Comprobación del Paso 2</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p2-1" data-ck="p2-1"><label for="ck-p2-1">Veo el repositorio <code>autoia-consultoria</code> en mi cuenta de GitHub.</label></li>
+    <li><input type="checkbox" id="ck-p2-2" data-ck="p2-2"><label for="ck-p2-2">Aparece la etiqueta <strong>Private</strong> junto al nombre.</label></li>
+    <li><input type="checkbox" id="ck-p2-3" data-ck="p2-3"><label for="ck-p2-3">Veo archivos dentro (<code>package.json</code>, <code>src</code>…) y al menos un commit.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 2</summary>
+    <ul>
+      <li><strong>AI Studio no me deja autorizar GitHub:</strong> comprueba que no tienes bloqueadas las ventanas emergentes.</li>
+      <li><strong>Solo me ofrece «Create new repository»:</strong> revisa <strong>Settings → GitHub</strong> o usa <strong>Import from GitHub</strong>.</li>
+      <li><strong>No aparece mi repositorio:</strong> mira si se ha creado en otra cuenta u organización.</li>
+    </ul>
+  </details>
+
+  <hr>
+
+  <!-- ================= PASO 3 ================= -->
+  <div class="step-head">
+    <h2>Paso 3: Publica la web en Vercel</h2>
+    <span class="time-pill">⏱️ 10-15 min</span>
+  </div>
+  <p><strong>Qué es Vercel:</strong> un servicio de <strong>hosting</strong>. El plan <strong>Hobby</strong>
+  es gratuito para uso personal y no comercial.</p>
+
+  <h3>Paso 3.1: Importa el repositorio</h3>
+  <ol>
+    <li>Entra en <strong>https://vercel.com</strong> e inicia sesión.</li>
+    <li>En tu panel, pulsa <strong>Add New…</strong> → <strong>Project</strong>.</li>
+    <li>Verás una lista <strong>Import Git Repository</strong>.</li>
+    <li>Si no aparece <code>autoia-consultoria</code>, pulsa <strong>Adjust GitHub App Permissions</strong>
+    y concede permiso de lectura al repositorio.</li>
+    <li>Junto a <code>autoia-consultoria</code>, pulsa <strong>Import</strong>.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 3.1</div>
+    <div class="sh-file">capturas/captura-3-1.png</div>
+    <div class="sh-cap">Pantalla «Import Git Repository» en Vercel. Resaltar el botón Import.</div>
+  </div>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span>Al dar permisos a Vercel sobre GitHub, elige <strong>solo el repositorio
+    que necesitas</strong> («Only select repositories») en lugar de dar acceso a todos.</p>
+  </div>
+
+  <h3>Paso 3.2: Primer despliegue (Deploy)</h3>
+  <ol>
+    <li>En <strong>Configure Project</strong> casi todo se rellena solo. <strong>No cambies nada.</strong></li>
+    <li>Pulsa el botón <strong>Deploy</strong>.</li>
+    <li>Verás una pantalla con el progreso. Tarda entre uno y tres minutos.</li>
+    <li>Al terminar, aparece la dirección pública, que acaba en <strong><code>.vercel.app</code></strong>.</li>
+    <li>Pulsa sobre la miniatura para abrir tu web. <strong>¡Ya está en internet!</strong> Copia esa
+    dirección en tu ficha del proyecto.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 3.2</div>
+    <div class="sh-file">capturas/captura-3-2.png</div>
+    <div class="sh-cap">Confirmación de despliegue correcto con la URL pública <code>…vercel.app</code>.</div>
+  </div>
+
+  <h3>Paso 3.3: Entiende el despliegue continuo</h3>
+  <p>Vercel <strong>vigila tu repositorio de GitHub</strong>. Cada vez que llega un commit nuevo, Vercel:</p>
+  <ol>
+    <li>Detecta el cambio en GitHub.</li>
+    <li>Construye de nuevo la web con el código actualizado.</li>
+    <li>Reemplaza la versión publicada por la nueva.</li>
+  </ol>
+
+  <div class="diagram">Pides un cambio en AI Studio  →  lo envías a GitHub (nuevo commit)  →  Vercel actualiza tu web sola</div>
+
+  <div class="callout tip">
+    <p><span class="ico">💡</span>Puedes ver todos los despliegues en la pestaña <strong>Deployments</strong>.
+    Si uno falla, el anterior sigue publicado: tu web no se cae por un error de código.</p>
+  </div>
+
+  <h4>✅ Comprobación del Paso 3</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p3-1" data-ck="p3-1"><label for="ck-p3-1">Mi web se abre en una dirección que termina en <code>.vercel.app</code>.</label></li>
+    <li><input type="checkbox" id="ck-p3-2" data-ck="p3-2"><label for="ck-p3-2">Se ve igual que en la vista previa de AI Studio.</label></li>
+    <li><input type="checkbox" id="ck-p3-3" data-ck="p3-3"><label for="ck-p3-3">Entiendo que Vercel republicará la web automáticamente cuando haya cambios en GitHub.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 3</summary>
+    <ul>
+      <li><strong>No veo mi repositorio al importar:</strong> pulsa <strong>Adjust GitHub App Permissions</strong>.</li>
+      <li><strong>El despliegue sale en rojo:</strong> abre <strong>Build Logs</strong>, copia el error y pásaselo a AI Studio.</li>
+      <li><strong>La web aparece en blanco o error 404:</strong> probablemente la IA generó una app con servidor. Pide convertirla a solo frontend con React y Vite.</li>
+      <li><strong>Vercel me pide un plan de pago:</strong> revisa que has elegido el plan <strong>Hobby</strong>.</li>
+    </ul>
+  </details>
+
+  <hr>
+
+  <!-- ================= PASO 4 ================= -->
+  <div class="step-head">
+    <h2>Paso 4: Crea la base de datos en Supabase</h2>
+    <span class="time-pill">⏱️ 20-30 min</span>
+  </div>
+  <p><strong>Qué es Supabase:</strong> un servicio que te da una <strong>base de datos</strong> en la nube.
+  Una base de datos relacional es como un conjunto de hojas de cálculo (llamadas <strong>tablas</strong>):
+  cada tabla tiene <strong>columnas</strong> y <strong>filas</strong>.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>id</th><th>nombre</th><th>apellido</th><th>telefono</th><th>correo</th>
+          <th>tamano_empresa</th><th>area_interes</th><th>fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>(automático)</td><td>Ana</td><td>López</td><td>600123456</td><td>ana@correo.com</td>
+          <td>11-50 empleados</td><td>Chatbots con IA</td><td>2026-10-01 10:30</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Paso 4.1: Crea un proyecto nuevo</h3>
+  <ol>
+    <li>Entra en <strong>https://supabase.com/dashboard</strong> y pulsa <strong>New project</strong>.</li>
+    <li><strong>Name:</strong> <code>autoia-consultoria</code>.</li>
+    <li><strong>Database Password:</strong> pulsa <strong>Generate a password</strong> y guárdala en un lugar seguro.</li>
+    <li><strong>Region:</strong> la más cercana a tus visitantes.</li>
+    <li><strong>Plan:</strong> Free.</li>
+    <li>Si ves <strong>Enable Data API</strong>, <strong>déjala activada</strong>.</li>
+    <li>Pulsa <strong>Create new project</strong> y espera uno o dos minutos.</li>
+  </ol>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span>La contraseña de la base de datos <strong>no es lo mismo</strong> que
+    las claves que verás en el Paso 4.4. <strong>Nunca</strong> la pegues en el código ni en prompts
+    de AI Studio.</p>
+  </div>
+
+  <h3>Paso 4.2: Crea la tabla con el SQL Editor</h3>
+  <p><strong>Qué es SQL:</strong> el lenguaje que entienden las bases de datos. Copia, pega y ejecuta.</p>
+  <ol>
+    <li>En el menú lateral de Supabase, pulsa <strong>SQL Editor</strong>.</li>
+    <li>Pulsa <strong>New query</strong>.</li>
+    <li>Copia y pega <strong>todo</strong> este bloque:</li>
+  </ol>
+
+  <div class="prompt-label">📋 Prompt para copiar — Consulta SQL para crear la tabla <code>registros</code></div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>-- 1) Crear la tabla "registros" (si todavía no existe)
+create table if not exists public.registros (
+  id uuid primary key default gen_random_uuid(),
+  nombre text not null check (char_length(nombre) between 1 and 100),
+  apellido text not null check (char_length(apellido) between 1 and 100),
+  telefono text check (telefono is null or char_length(telefono) <= 30),
+  correo text not null check (char_length(correo) between 5 and 200),
+  tamano_empresa text check (tamano_empresa is null or char_length(tamano_empresa) <= 50),
+  area_interes text check (area_interes is null or char_length(area_interes) <= 100),
+  fecha timestamptz not null default now()
+);
+
+-- 2) Activar la seguridad por filas (RLS)
+alter table public.registros enable row level security;
+
+-- 3) Dar permiso a la web (rol "anon") para INSERTAR filas, y solo eso
+grant insert on public.registros to anon;
+
+drop policy if exists "Permitir insertar desde la web" on public.registros;
+create policy "Permitir insertar desde la web"
+  on public.registros
+  for insert
+  to anon
+  with check (true);</code></pre>
+  </div>
+
+  <ol start="4">
+    <li>Pulsa <strong>Run</strong> (o <code>Ctrl + Enter</code>).</li>
+    <li>Debe aparecer <strong>Success. No rows returned</strong>.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 4.1</div>
+    <div class="sh-file">capturas/captura-4-1.png</div>
+    <div class="sh-cap">Editor SQL con el código de la tabla <code>registros</code>. Resaltar el botón Run.</div>
+  </div>
+
+  <h4>¿Qué hace cada parte del SQL?</h4>
+  <ul>
+    <li><strong>Parte 1:</strong> crea la tabla. <code>not null</code> significa «campo obligatorio».
+    Las comprobaciones <code>check</code> limitan la longitud de los textos.</li>
+    <li><strong>Parte 2:</strong> activa <strong>RLS</strong> (<em>Row Level Security</em>). Nadie puede
+    tocar la tabla sin permiso expreso.</li>
+    <li><strong>Parte 3:</strong> da permiso a los visitantes para <strong>insertar</strong> filas, pero
+    <strong>no para leer, modificar ni borrar</strong>.</li>
+  </ul>
+
+  <div class="callout important">
+    <p><span class="ico">❗</span><strong>Nota sobre los permisos:</strong> desde 2026, las tablas nuevas
+    de Supabase <strong>no son accesibles desde la web automáticamente</strong>: hace falta un permiso
+    expreso, que es la línea <code>grant insert … to anon</code>. Si te la saltas, el formulario fallará
+    con «permission denied».</p>
+  </div>
+
+  <div class="callout important">
+    <p><span class="ico">❗</span>Tú sí podrás ver todos los registros desde el panel de Supabase
+    (en <strong>Table Editor</strong>), porque entras como administrador. Los visitantes de la web, no.</p>
+  </div>
+
+  <h3>Paso 4.3: Comprueba que la tabla existe</h3>
+  <ol>
+    <li>En el menú lateral, entra en <strong>Table Editor</strong>.</li>
+    <li>Debes ver la tabla <strong>registros</strong> con sus columnas, todavía vacía.</li>
+    <li>Fíjate en que aparece una indicación de que <strong>RLS está activado</strong>.</li>
+  </ol>
+
+  <h3>Paso 4.4: Localiza la URL y la clave pública</h3>
+  <p>La web necesita dos datos para «llamar a la puerta» de tu base de datos:</p>
+  <ul>
+    <li><strong>Project URL:</strong> la dirección de tu proyecto (algo como <code>https://abcdefghijk.supabase.co</code>).</li>
+    <li><strong>Clave pública (publishable key):</strong> empieza por <code>sb_publishable_…</code>.</li>
+  </ul>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span><strong>Un cambio de nombre importante.</strong> Hasta hace poco,
+    esta clave se llamaba <strong>anon key</strong>. Supabase la está sustituyendo por la
+    <strong>publishable key</strong> y tiene previsto retirar las antiguas a finales de 2026.
+    Cumplen el mismo papel.</p>
+  </div>
+
+  <p>Cómo encontrarlas:</p>
+  <ol>
+    <li><strong>Opción rápida:</strong> pulsa el botón <strong>Connect</strong> en la parte superior del proyecto.</li>
+    <li><strong>Opción por menús:</strong> abre <strong>Project Settings</strong> (engranaje).
+      <ul>
+        <li>En <strong>Data API</strong> encontrarás la <strong>Project URL</strong>.</li>
+        <li>En <strong>API Keys</strong>, pestaña <strong>Publishable and secret API keys</strong>,
+        copia la <strong>Publishable key</strong>.</li>
+      </ul>
+    </li>
+    <li>Pega ambos datos en tu ficha del proyecto.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 4.2</div>
+    <div class="sh-file">capturas/captura-4-2.png</div>
+    <div class="sh-cap">Project Settings &gt; API Keys / Data API. Resaltar Project URL y la Publishable key.
+    Censurar la clave secreta si aparece.</div>
+  </div>
+
+  <h4>Qué se puede usar y qué no</h4>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Dato</th><th>¿Puede usarse en la web?</th><th>Dónde se guarda</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Project URL</strong></td><td><span class="badge ok">Sí</span></td><td>Variable de entorno en Vercel</td></tr>
+        <tr><td><strong>Publishable key</strong> (antes «anon key»)</td><td><span class="badge ok">Sí, RLS la limita</span></td><td>Variable de entorno en Vercel</td></tr>
+        <tr><td><strong>Secret key / service_role</strong></td><td><span class="badge no">NUNCA</span></td><td>En ningún sitio relacionado con la web</td></tr>
+        <tr><td><strong>Contraseña de la base de datos</strong></td><td><span class="badge no">NUNCA</span></td><td>Gestor de contraseñas</td></tr>
+        <tr><td><strong>Contraseñas de tus cuentas</strong></td><td><span class="badge no">NUNCA</span></td><td>Gestor de contraseñas</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Cuidado con la clave secreta (<code>secret</code> /
+    <code>service_role</code>):</strong> da acceso total a tu base de datos saltándose todas las
+    protecciones. <strong>NUNCA la copies a tu web, a GitHub, a Vercel ni a ningún prompt.</strong></p>
+  </div>
+
+  <h4>✅ Comprobación del Paso 4</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p4-1" data-ck="p4-1"><label for="ck-p4-1">Existe la tabla <code>registros</code> en el Table Editor, con RLS activado.</label></li>
+    <li><input type="checkbox" id="ck-p4-2" data-ck="p4-2"><label for="ck-p4-2">Tengo guardadas en mi ficha la <strong>Project URL</strong> y la <strong>clave pública</strong>.</label></li>
+    <li><input type="checkbox" id="ck-p4-3" data-ck="p4-3"><label for="ck-p4-3">Sé que la clave secreta / <code>service_role</code> NO se usa nunca en la web.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 4</summary>
+    <ul>
+      <li><strong>El SQL da error:</strong> comprueba que has copiado <strong>todo el bloque</strong>. Puedes reejecutarlo sin miedo.</li>
+      <li><strong>No encuentro la clave pública:</strong> usa <strong>Connect</strong> o <strong>Project Settings → API Keys</strong>.</li>
+      <li><strong>El proyecto tarda mucho:</strong> espera unos minutos y refresca.</li>
+      <li><strong>No me deja crear otro proyecto:</strong> el plan gratuito limita el número de proyectos.</li>
+    </ul>
+  </details>
+
+  <hr>
+
+  <!-- ================= PASO 5 ================= -->
+  <div class="step-head">
+    <h2>Paso 5: Conecta la web con la base de datos de forma segura</h2>
+    <span class="time-pill">⏱️ 30-40 min</span>
+  </div>
+  <p>Tenemos una web publicada y una base de datos lista, pero <strong>no se conocen entre sí</strong>.
+  Vamos a conectarlas en tres partes:</p>
+  <ol>
+    <li>Pedir a AI Studio que <strong>programe el envío</strong> del formulario a Supabase.</li>
+    <li>Guardar la URL y la clave en Vercel, como <strong>variables de entorno</strong>.</li>
+    <li>Volver a publicar y comprobar que no hay claves escritas en el código.</li>
+  </ol>
+
+  <h3>Paso 5.1: Por qué NO se pegan las claves en el código</h3>
+  <ul>
+    <li>El código vive en <strong>GitHub</strong>; si lo haces público, <strong>cualquier clave quedaría expuesta</strong>.</li>
+    <li>Los bots <strong>rastrean GitHub constantemente</strong> buscando claves filtradas.</li>
+    <li>Si una clave se filtra, hay que <strong>cambiarla</strong> y modificar el código otra vez.</li>
+  </ul>
+  <p>La solución son las <strong>variables de entorno</strong> (<em>environment variables</em>): datos
+  guardados <strong>en el servicio de hosting</strong> (Vercel), <strong>fuera del código</strong>.</p>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span><strong>Regla de oro:</strong> ninguna clave, contraseña o secreto debe
+    aparecer escrita en el código ni en los mensajes que envías a AI Studio.</p>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span><strong>Un matiz para entenderlo bien.</strong> En una web, el navegador
+    del visitante necesita la URL y la clave pública para poder enviar los datos, así que esos dos valores
+    <strong>acaban siendo visibles</strong> en el código que descarga el navegador. Eso es normal y está
+    previsto por Supabase. Lo que protege tu base de datos <strong>no es esconder esa clave, sino las
+    reglas RLS y los permisos</strong> del Paso 4.</p>
+  </div>
+
+  <h3>Paso 5.2: Pide a AI Studio que conecte el formulario con Supabase</h3>
+  <p>Vuelve a <strong>Google AI Studio</strong>, abre tu proyecto y envía este prompt:</p>
+
+  <div class="prompt-label">📋 Prompt para copiar — Conectar el formulario con Supabase</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Conecta el formulario de contacto con una base de datos Supabase usando la librería oficial @supabase/supabase-js.
+
+Requisitos:
+1. Instala/usa @supabase/supabase-js y crea un cliente de Supabase en un archivo aparte (por ejemplo src/supabaseClient).
+2. NO escribas ninguna URL ni clave directamente en el código. Lee los valores desde variables de entorno: import.meta.env.VITE_SUPABASE_URL y import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY.
+3. Al enviar el formulario, inserta una fila en la tabla "registros" con estas columnas: nombre, apellido, telefono, correo, tamano_empresa, area_interes. (Las columnas "id" y "fecha" se rellenan solas.)
+4. Usa solo la operación de insertar. No pidas que se devuelvan los datos insertados (no uses select después de insert) ni intentes leer la tabla.
+5. Mientras se envía, deshabilita el botón y muestra "Enviando…". Si todo va bien, muestra un mensaje de éxito y vacía el formulario. Si hay un error, muestra un mensaje amable en español indicando que se vuelva a intentar.
+6. Si faltan las variables de entorno, muestra un aviso claro en la consola del navegador.
+7. Mantén la aplicación como solo de frontend (sin servidor ni backend propio).</code></pre>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span>Es posible que en la <strong>vista previa de AI Studio</strong> el
+    formulario muestre un error de conexión. Es normal: las variables solo las vamos a configurar en
+    Vercel. La prueba real se hará en tu web publicada.</p>
+  </div>
+
+  <h3>Paso 5.3: Envía los cambios a GitHub</h3>
+  <ol>
+    <li>Cuando la IA termine, abre el <strong>icono de GitHub</strong> en AI Studio.</li>
+    <li>Envía los cambios (<em>push</em>) al repositorio existente <code>autoia-consultoria</code>.</li>
+    <li>Comprueba en GitHub que hay un <strong>commit nuevo</strong>.</li>
+    <li>En Vercel, la pestaña <strong>Deployments</strong> mostrará un despliegue nuevo.</li>
+  </ol>
+
+  <h3>Paso 5.4: Configura las variables de entorno en Vercel</h3>
+  <ol>
+    <li>En <strong>Vercel</strong>, abre tu proyecto <code>autoia-consultoria</code>.</li>
+    <li>Entra en la pestaña <strong>Settings</strong>.</li>
+    <li>En el menú lateral, pulsa <strong>Environment Variables</strong>.</li>
+    <li>Añade la <strong>primera variable</strong>:
+      <ul>
+        <li><strong>Key:</strong> <code>VITE_SUPABASE_URL</code></li>
+        <li><strong>Value:</strong> tu <strong>Project URL</strong> de Supabase.</li>
+        <li><strong>Environments:</strong> deja marcados Production, Preview y Development.</li>
+        <li>Pulsa <strong>Save</strong>.</li>
+      </ul>
+    </li>
+    <li>Añade la <strong>segunda variable</strong>:
+      <ul>
+        <li><strong>Key:</strong> <code>VITE_SUPABASE_PUBLISHABLE_KEY</code></li>
+        <li><strong>Value:</strong> tu <strong>clave pública</strong> (<code>sb_publishable_…</code>).</li>
+        <li>Pulsa <strong>Save</strong>.</li>
+      </ul>
+    </li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 5.1</div>
+    <div class="sh-file">capturas/captura-5-1.png</div>
+    <div class="sh-cap">Settings &gt; Environment Variables en Vercel. Resaltar los campos Key y Value.
+    Censurar los valores.</div>
+  </div>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Los nombres deben ser exactamente iguales</strong> (mayúsculas,
+    guiones bajos y el prefijo <code>VITE_</code>). Si cambias una letra, la web no encontrará la variable.</p>
+  </div>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span><strong>Jamás</strong> añadas aquí la clave secreta / <code>service_role</code>.
+    Y recuerda: una variable que empieza por <code>VITE_</code> acaba visible en el navegador del
+    visitante, así que solo debe contener datos que puedan ser públicos.</p>
+  </div>
+
+  <h3>Paso 5.5: Vuelve a desplegar para aplicar los cambios</h3>
+  <ol>
+    <li>En Vercel, entra en la pestaña <strong>Deployments</strong>.</li>
+    <li>Localiza el despliegue más reciente.</li>
+    <li>Pulsa los <strong>tres puntos (⋯)</strong> y elige <strong>Redeploy</strong>.</li>
+    <li>Confirma pulsando <strong>Redeploy</strong> otra vez. Espera a que aparezca <strong>Ready</strong>.</li>
+  </ol>
+
+  <h3>Paso 5.6: Comprueba que no hay claves escritas en el código</h3>
+  <ol>
+    <li>En GitHub, abre tu repositorio y busca el archivo del cliente de Supabase.</li>
+    <li>Comprueba que solo aparecen referencias del tipo <code>import.meta.env.VITE_…</code> y
+    <strong>ninguna dirección <code>https://…supabase.co</code> ni claves que empiecen por <code>sb_</code></strong>.</li>
+    <li>Si ves una clave escrita, pide a AI Studio: <em>«Quita las claves del código y léelas desde
+    variables de entorno»</em>, envía los cambios y genera claves nuevas en Supabase.</li>
+  </ol>
+
+  <h4>✅ Comprobación del Paso 5</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p5-1" data-ck="p5-1"><label for="ck-p5-1">AI Studio ha modificado el código y lo he enviado a GitHub.</label></li>
+    <li><input type="checkbox" id="ck-p5-2" data-ck="p5-2"><label for="ck-p5-2">En Vercel existen las dos variables <code>VITE_SUPABASE_URL</code> y <code>VITE_SUPABASE_PUBLISHABLE_KEY</code>.</label></li>
+    <li><input type="checkbox" id="ck-p5-3" data-ck="p5-3"><label for="ck-p5-3">He hecho un <strong>Redeploy</strong> y el estado es <strong>Ready</strong>.</label></li>
+    <li><input type="checkbox" id="ck-p5-4" data-ck="p5-4"><label for="ck-p5-4">No hay claves escritas en el código de GitHub.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 5</summary>
+    <ul>
+      <li><strong>La IA ha usado otros nombres:</strong> pide que use exactamente los nombres indicados, o cambia los nombres en Vercel.</li>
+      <li><strong>Tras el Redeploy sigue sin conectar:</strong> comprueba que las variables están guardadas para <strong>Production</strong>.</li>
+      <li><strong>Vercel no me deja guardar la variable:</strong> revisa que no hay espacios al principio ni al final.</li>
+    </ul>
+  </details>
+
+  <hr>
+
+  <!-- ================= PASO 6 ================= -->
+  <div class="step-head">
+    <h2>Paso 6: Pruebas, protección, corrección de errores y limpieza final</h2>
+    <span class="time-pill">⏱️ 45-60 min</span>
+  </div>
+
+  <h3>Paso 6.1: Prueba el formulario</h3>
+  <ol>
+    <li>Abre tu web publicada. Sugerencia: usa una <strong>ventana de incógnito</strong>.</li>
+    <li>Rellena el formulario con <strong>datos de prueba</strong>.</li>
+    <li>Pulsa <strong>Solicitar consultoría gratuita</strong>.</li>
+    <li>Debe aparecer el mensaje de éxito.</li>
+    <li>Abre <strong>Supabase → Table Editor → registros</strong> (refresca si lo tenías abierto).</li>
+    <li><strong>Deberías ver una fila nueva</strong> con los datos y la fecha.</li>
+  </ol>
+
+  <div class="shot">
+    <div class="sh-title">📸 Captura 6.1</div>
+    <div class="sh-file">capturas/captura-6-1.png</div>
+    <div class="sh-cap">Pantalla dividida. Izquierda: formulario completado en la web publicada.
+    Derecha: Table Editor de Supabase con la nueva fila.</div>
+  </div>
+
+  <p>🎉 <strong>Si ves la fila, has completado el ciclo completo.</strong> Tu web publicada está
+  guardando datos en tiempo real.</p>
+
+  <h3>Paso 6.2: Si algo falla, usa AI Studio como «médico de errores»</h3>
+  <p><strong>Cómo conseguir el mensaje de error:</strong></p>
+  <ol>
+    <li>En tu web, pulsa <strong>F12</strong> (o clic derecho → <strong>Inspeccionar</strong>).</li>
+    <li>Abre la pestaña <strong>Console</strong>.</li>
+    <li>Envía el formulario de nuevo y fíjate en los mensajes <strong>en rojo</strong>.</li>
+    <li>Haz una captura o copia el texto del error.</li>
+  </ol>
+
+  <div class="prompt-label">📋 Prompt para copiar — Plantilla para pedir ayuda con un error</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Mi formulario no guarda los datos en Supabase. Al enviarlo, ocurre esto: [describe lo que ves: "aparece un mensaje de error", "no pasa nada", etc.].
+
+En la consola del navegador aparece este error:
+[pega aquí el texto del error]
+
+La tabla de Supabase se llama "registros" y tiene las columnas: nombre, apellido, telefono, correo, tamano_empresa, area_interes. Las variables de entorno se llaman VITE_SUPABASE_URL y VITE_SUPABASE_PUBLISHABLE_KEY.
+
+Revisa el código del formulario y la conexión con Supabase, explícame brevemente cuál es el problema y corrígelo.</code></pre>
+  </div>
+
+  <div class="callout caution">
+    <p><span class="ico">🔒</span>Antes de enviar una captura o un texto a AI Studio, comprueba que
+    <strong>no aparezcan claves secretas, contraseñas ni la clave <code>service_role</code></strong>.</p>
+  </div>
+
+  <p><strong>Ciclo de corrección (se repite hasta que funcione):</strong></p>
+  <div class="diagram">Probar → Ver el error → Describirlo a AI Studio → Aplicar la corrección
+→ Enviar a GitHub → Vercel despliega solo → Volver a probar</div>
+
+  <h4>Los dos errores más típicos de Supabase</h4>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Si en la consola ves…</th><th>Significa</th><th>Solución</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>permission denied for table registros</code></td>
+          <td>Falta el permiso expreso de inserción</td>
+          <td>Ejecuta de nuevo el SQL del Paso 4.2 (incluye <code>grant insert … to anon</code>)</td>
+        </tr>
+        <tr>
+          <td><code>new row violates row-level security policy</code></td>
+          <td>Falta la política de RLS o está mal creada</td>
+          <td>Ejecuta de nuevo el SQL del Paso 4.2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>Paso 6.3: Privacidad y consentimiento</h3>
+  <p>Si vas a recoger datos personales reales, la normativa de protección de datos (en la UE, el RGPD)
+  te obliga a informar y pedir consentimiento.</p>
+
+  <div class="prompt-label">📋 Prompt para copiar — Casilla de consentimiento y política de privacidad</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Añade al formulario una casilla obligatoria con el texto "He leído y acepto la política de privacidad", con un enlace a una página de "Política de privacidad". El formulario no debe poder enviarse si la casilla no está marcada.
+
+Crea la página "Política de privacidad" con un texto de ejemplo en español (marcado claramente como borrador a revisar) que explique: quién es el responsable de los datos, qué datos se recogen, para qué se usan, cuánto tiempo se conservan y cómo ejercer los derechos de acceso, rectificación y supresión. Añade un enlace a esa página en el pie de la web.
+
+No cambies el diseño del resto de la web.</code></pre>
+  </div>
+
+  <div class="callout important">
+    <p><span class="ico">❗</span>El texto que genera la IA es un <strong>borrador de ejemplo</strong>,
+    no asesoramiento legal. Si tu web va a recoger datos reales, haz que lo revise un profesional.</p>
+  </div>
+
+  <h3>Paso 6.4: Protege el formulario contra el spam básico</h3>
+
+  <div class="prompt-label">📋 Prompt para copiar — Medidas básicas contra el spam</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Añade medidas básicas contra spam al formulario de contacto:
+1. Un campo oculto "trampa" (honeypot) llamado "sitio_web" que las personas no ven. Si viene relleno, no envíes nada a Supabase y muestra igualmente el mensaje de éxito.
+2. Validación del formato del correo electrónico y de la longitud máxima de cada campo (nombre y apellido: 100 caracteres; teléfono: 30; correo: 200).
+3. Tras un envío correcto, bloquea el botón durante 30 segundos para evitar envíos repetidos.
+No cambies el diseño ni el resto del funcionamiento.</code></pre>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span>Estas medidas detienen solo los programas automáticos más simples.
+    Si algún día recibes mucho spam, se pueden añadir sistemas más avanzados (CAPTCHA).</p>
+  </div>
+
+  <h3>Paso 6.5: Elimina los indicadores de depuración</h3>
+
+  <div class="prompt-label">📋 Prompt para copiar — Preparar la web para producción</div>
+  <div class="code-wrap">
+    <button class="copyBtn">COPIAR</button>
+    <pre><code>Prepara la web para producción:
+1. Elimina cualquier indicador visual de depuración, banners de prueba, textos como "modo desarrollo" o "conectado a Supabase", y datos de ejemplo visibles.
+2. Elimina los console.log y mensajes técnicos que no sean necesarios. Deja únicamente los errores importantes en la consola.
+3. Muestra a los usuarios solo mensajes claros y amables en español, sin detalles técnicos.
+4. Comprueba que todos los textos, enlaces y botones tienen sentido para un visitante real.
+5. No modifiques el diseño ni el funcionamiento del formulario.</code></pre>
+  </div>
+
+  <h3>Paso 6.6: Cómo ver y gestionar los contactos recibidos</h3>
+  <ul>
+    <li>Entra en <strong>Supabase → Table Editor → registros</strong>.</li>
+    <li>Puedes <strong>ordenar y filtrar</strong> las filas.</li>
+    <li>Para exportar, usa la opción de <strong>exportar a CSV</strong>.</li>
+    <li><strong>Borra las filas de prueba</strong>: selecciónalas y pulsa <strong>Delete</strong>.</li>
+  </ul>
+
+  <div class="callout tip">
+    <p><span class="ico">💡</span>Entra en tu proyecto de Supabase al menos una vez por semana:
+    el plan gratuito pausa los proyectos con poca actividad.</p>
+  </div>
+
+  <h3>Paso 6.7 (opcional): Dirección web personalizada</h3>
+  <ol>
+    <li>Necesitas <strong>comprar un dominio</strong> (unos 10-15 € al año para los más comunes).</li>
+    <li>En Vercel: proyecto → <strong>Settings → Domains</strong>.</li>
+    <li>Escribe tu dominio y pulsa <strong>Add</strong>.</li>
+    <li>Vercel te mostrará unos <strong>registros DNS</strong> que debes copiar en el panel de la
+    empresa donde compraste el dominio.</li>
+    <li>Espera de unos minutos a unas horas. Cuando Vercel muestre <strong>Valid Configuration</strong>,
+    tu web ya funciona con tu dominio, con HTTPS incluido.</li>
+  </ol>
+
+  <h4>✅ Comprobación del Paso 6</h4>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-p6-1" data-ck="p6-1"><label for="ck-p6-1">Una prueba desde la web publicada crea una fila en Supabase.</label></li>
+    <li><input type="checkbox" id="ck-p6-2" data-ck="p6-2"><label for="ck-p6-2">El formulario tiene casilla de consentimiento y enlace a la política de privacidad.</label></li>
+    <li><input type="checkbox" id="ck-p6-3" data-ck="p6-3"><label for="ck-p6-3">He añadido las medidas básicas contra el spam.</label></li>
+    <li><input type="checkbox" id="ck-p6-4" data-ck="p6-4"><label for="ck-p6-4">No quedan banners, avisos ni textos de depuración visibles.</label></li>
+    <li><input type="checkbox" id="ck-p6-5" data-ck="p6-5"><label for="ck-p6-5">He borrado las filas de prueba de la tabla.</label></li>
+    <li><input type="checkbox" id="ck-p6-6" data-ck="p6-6"><label for="ck-p6-6">(Opcional) Mi dominio personalizado funciona.</label></li>
+  </ul>
+
+  <details>
+    <summary>🛠️ Si algo falla en el Paso 6</summary>
+    <ul>
+      <li><strong>Funciona en mi ordenador, pero no en el móvil:</strong> abre con datos móviles y vacía la caché.</li>
+      <li><strong>Veo la versión antigua:</strong> recarga con <code>Ctrl + F5</code> o abre incógnito.</li>
+      <li><strong>Tras añadir el honeypot el formulario ya no guarda:</strong> usa la plantilla del Paso 6.2.</li>
+    </ul>
+  </details>
+
+</section>
+
+<!-- ============================================================
+     PANEL: PRÁCTICA
+     ============================================================ -->
+<section class="panel" id="panel-practica" data-print-title="PRÁCTICA">
+
+  <h1>🧪 Práctica guiada</h1>
+  <p style="color:var(--text-dim);">Ejercicios para consolidar lo aprendido. Cada uno incluye
+  enunciado, pistas y solución explicada.</p>
+
+  <h2>Ejercicio 1 — Comprueba el ciclo completo</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Verificar que la web publicada, GitHub, Vercel y Supabase están conectados de extremo a extremo.</p>
+    <h4>Pasos</h4>
+    <ol>
+      <li>Abre tu web en una ventana de incógnito.</li>
+      <li>Rellena el formulario con datos ficticios pero reconocibles (por ejemplo,
+      nombre <em>ZZPrueba</em>).</li>
+      <li>Envía y espera el mensaje de éxito.</li>
+      <li>Entra en Supabase → Table Editor → <code>registros</code> y refresca.</li>
+      <li>Localiza la fila con <em>ZZPrueba</em>.</li>
+      <li>Borra esa fila (selecciónala → Delete).</li>
+    </ol>
+    <h4>Resultado esperado</h4>
+    <p>La fila aparece en Supabase en menos de 5 segundos tras el envío.</p>
+    <h4>Si no aparece</h4>
+    <ul>
+      <li>Abre la consola (F12) y busca errores en rojo.</li>
+      <li>Revisa que el Redeploy de Vercel sea <strong>Ready</strong>.</li>
+      <li>Comprueba que las variables empiezan por <code>VITE_</code>.</li>
+    </ul>
+  </div>
+
+  <h2>Ejercicio 2 — Cambia un color y observa el despliegue continuo</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Comprobar que el ciclo <em>AI Studio → GitHub → Vercel</em> publica solo.</p>
+    <h4>Pasos</h4>
+    <ol>
+      <li>En AI Studio, escribe: <em>«Cambia el color de la cabecera a un azul más oscuro»</em>.</li>
+      <li>Espera a que la IA termine.</li>
+      <li>Envía los cambios a GitHub (icono de gato → push).</li>
+      <li>Abre Vercel → Deployments y observa el despliegue nuevo.</li>
+      <li>Cuando esté <strong>Ready</strong>, abre tu web con <code>Ctrl + F5</code>.</li>
+    </ol>
+    <h4>Resultado esperado</h4>
+    <p>El cambio se ve en la web publicada sin haber tocado Vercel manualmente.</p>
+    <h4>Pregunta</h4>
+    <p>¿Cuánto ha tardado desde el push hasta verlo en la web? Normalmente entre 1 y 3 minutos.</p>
+  </div>
+
+  <h2>Ejercicio 3 — Provoca un error a propósito y arréglalo</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Aprender a usar la consola del navegador y el ciclo de corrección.</p>
+    <h4>Pasos</h4>
+    <ol>
+      <li>En Supabase → SQL Editor, ejecuta:
+        <div class="code-wrap">
+          <button class="copyBtn">COPIAR</button>
+          <pre><code>revoke insert on public.registros from anon;</code></pre>
+        </div>
+      </li>
+      <li>Envía el formulario en tu web publicada.</li>
+      <li>Abre la consola (F12) y observa el error.</li>
+      <li>Deberías ver algo como <code>permission denied for table registros</code>.</li>
+      <li>Vuelve a ejecutar el bloque SQL del Paso 4.2 completo.</li>
+      <li>Envía el formulario otra vez: ya debe funcionar.</li>
+    </ol>
+    <h4>Solución explicada</h4>
+    <p>El error <em>permission denied</em> significa que el rol <code>anon</code> (los visitantes)
+    no tiene permiso para insertar. La línea <code>grant insert … to anon</code> lo restaura.
+    Este es el error más común al configurar Supabase por primera vez.</p>
+  </div>
+
+  <h2>Ejercicio 4 — Añade una sección nueva</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Practicar prompts concretos para ampliar la web.</p>
+    <h4>Pasos</h4>
+    <ol>
+      <li>Pide en AI Studio:
+        <div class="code-wrap">
+          <button class="copyBtn">COPIAR</button>
+          <pre><code>Añade una sección de "Preguntas frecuentes" con 5 preguntas y respuestas relacionadas con la consultoría de automatización e IA. Usa un acordeón desplegable. Colócala justo antes del pie de página. Mantén el estilo actual.</code></pre>
+        </div>
+      </li>
+      <li>Revisa la vista previa.</li>
+      <li>Envía los cambios a GitHub y espera el despliegue.</li>
+      <li>Comprueba en la web publicada que el acordeón funciona.</li>
+    </ol>
+    <h4>Resultado esperado</h4>
+    <p>Una nueva sección funcional con 5 preguntas desplegables.</p>
+  </div>
+
+  <h2>Ejercicio 5 — Simula la pausa de Supabase</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Saber qué hacer si tu proyecto gratuito se pausa por inactividad.</p>
+    <h4>Escenario</h4>
+    <p>Tras una semana sin actividad, tu web deja de guardar datos. En Supabase verás el proyecto
+    marcado como <strong>Paused</strong>.</p>
+    <h4>Solución</h4>
+    <ol>
+      <li>Entra en <strong>https://supabase.com/dashboard</strong>.</li>
+      <li>Abre tu proyecto <code>autoia-consultoria</code>.</li>
+      <li>Pulsa <strong>Resume project</strong> (o equivalente).</li>
+      <li>Espera unos minutos a que se reactive.</li>
+      <li>No se pierde ningún dato: la base de datos se conserva.</li>
+    </ol>
+    <h4>Prevención</h4>
+    <p>Entra en el panel al menos una vez por semana, o mantén la web con visitas reales.</p>
+  </div>
+
+  <h2>Ejercicio 6 — Auditoría de seguridad exprés</h2>
+  <div class="card">
+    <h4>Objetivo</h4>
+    <p>Comprobar que no hay secretos filtrados.</p>
+    <h4>Lista de comprobación</h4>
+    <ul class="check-list">
+      <li><input type="checkbox" id="ck-aud-1" data-ck="aud-1"><label for="ck-aud-1">Mi repositorio de GitHub figura como <strong>Private</strong>.</label></li>
+      <li><input type="checkbox" id="ck-aud-2" data-ck="aud-2"><label for="ck-aud-2">En el código no hay ninguna URL <code>https://…supabase.co</code> escrita directamente.</label></li>
+      <li><input type="checkbox" id="ck-aud-3" data-ck="aud-3"><label for="ck-aud-3">En el código no hay ninguna clave que empiece por <code>sb_</code>.</label></li>
+      <li><input type="checkbox" id="ck-aud-4" data-ck="aud-4"><label for="ck-aud-4">En Vercel solo tengo dos variables y ninguna es la <code>service_role</code>.</label></li>
+      <li><input type="checkbox" id="ck-aud-5" data-ck="aud-5"><label for="ck-aud-5">La tabla <code>registros</code> tiene RLS activado.</label></li>
+      <li><input type="checkbox" id="ck-aud-6" data-ck="aud-6"><label for="ck-aud-6">Tengo activada la verificación en dos pasos en Google y GitHub.</label></li>
+    </ul>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: ERRORES
+     ============================================================ -->
+<section class="panel" id="panel-errores" data-print-title="ERRORES Y SOLUCIONES">
+
+  <h1>🚨 Errores frecuentes y cómo resolverlos</h1>
+  <p style="color:var(--text-dim);">Los problemas más habituales, agrupados por área. Busca el síntoma
+  y sigue la solución.</p>
+
+  <h2>Problemas con la conexión a la base de datos</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa probable</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El formulario muestra un error y en Supabase no aparece nada</td>
+          <td>Las variables de entorno no están bien escritas, o falta el Redeploy</td>
+          <td>Revisa que los nombres sean exactamente <code>VITE_SUPABASE_URL</code> y
+          <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> y vuelve a hacer <strong>Redeploy</strong> (Paso 5.5)</td>
+        </tr>
+        <tr>
+          <td>Error <code>permission denied for table registros</code></td>
+          <td>Falta el permiso de inserción para la web</td>
+          <td>Vuelve a ejecutar el bloque SQL del Paso 4.2 (incluye <code>grant insert … to anon</code>)</td>
+        </tr>
+        <tr>
+          <td>Error <code>new row violates row-level security policy</code></td>
+          <td>Falta la política que permite insertar</td>
+          <td>Vuelve a ejecutar el bloque SQL del Paso 4.2</td>
+        </tr>
+        <tr>
+          <td>Error de que la tabla o una columna «no existe»</td>
+          <td>El nombre en el código no coincide con el de Supabase</td>
+          <td>Pide a AI Studio que use exactamente <code>registros</code> y las columnas del Paso 4</td>
+        </tr>
+        <tr>
+          <td>Error por usar <code>.select()</code> tras insertar</td>
+          <td>Las reglas solo permiten insertar, no leer</td>
+          <td>Pide a AI Studio: <em>«Usa solo insert, sin pedir que se devuelvan los datos»</em></td>
+        </tr>
+        <tr>
+          <td><code>Invalid API key</code></td>
+          <td>La clave está mal copiada, con espacios, o es de otro proyecto</td>
+          <td>Copia de nuevo la clave pública desde el mismo proyecto, pégala sin espacios y haz Redeploy</td>
+        </tr>
+        <tr>
+          <td>Supabase muestra el proyecto como <strong>Paused</strong></td>
+          <td>Inactividad en el plan gratuito</td>
+          <td>Entra en el panel, abre el proyecto y pulsa <strong>Resume project</strong>. Conserva los datos</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Problemas con GitHub y AI Studio</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa probable</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AI Studio solo ofrece <strong>Create new repository</strong></td>
+          <td>Se perdió el vínculo con el repositorio tras reconectar</td>
+          <td>Revisa <strong>Settings → GitHub</strong>; si no se recupera, usa <strong>Import from GitHub</strong>
+          o el Plan B del Paso 2.4</td>
+        </tr>
+        <tr>
+          <td>No encuentro el botón de GitHub</td>
+          <td>Cambios en la interfaz</td>
+          <td>Busca el icono de GitHub o el apartado <strong>GitHub</strong> dentro de <strong>Settings</strong></td>
+        </tr>
+        <tr>
+          <td>Subí por error una clave secreta a GitHub</td>
+          <td>Clave expuesta</td>
+          <td>Genera una clave nueva en Supabase, actualiza las variables en Vercel y haz Redeploy.
+          La antigua ya no es segura</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Problemas con Vercel y la publicación</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Síntoma</th><th>Causa probable</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>El despliegue sale en rojo (<strong>Error</strong>)</td>
+          <td>El código nuevo tiene un fallo de construcción</td>
+          <td>Abre el despliegue → <strong>Build Logs</strong>, copia el error y pásalo a AI Studio.
+          La versión anterior sigue publicada</td>
+        </tr>
+        <tr>
+          <td>La web aparece en blanco o con error 404 tras desplegar</td>
+          <td>La IA generó una aplicación con servidor en vez de solo frontend</td>
+          <td>Pide en AI Studio que la convierta en solo frontend con React y Vite</td>
+        </tr>
+        <tr>
+          <td>No veo mi repositorio al importar en Vercel</td>
+          <td>Faltan permisos de GitHub para Vercel</td>
+          <td>Pulsa <strong>Adjust GitHub App Permissions</strong> y selecciona el repositorio (Paso 3.1)</td>
+        </tr>
+        <tr>
+          <td>Hice un cambio y la web sigue igual</td>
+          <td>Caché del navegador, o el cambio no llegó a GitHub</td>
+          <td>Recarga con <code>Ctrl + F5</code>, prueba en incógnito y confirma que hay un commit nuevo</td>
+        </tr>
+        <tr>
+          <td>La web carga pero el formulario no hace nada</td>
+          <td>Error de código en el envío</td>
+          <td>Abre la consola (F12) y usa el prompt del Paso 6.2</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Problemas de interfaz y menús</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Síntoma</th><th>Qué hacer</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>No encuentro «Build» en AI Studio</td>
+          <td>Busca <em>Build</em>, <em>Apps</em> o <em>Crear app</em>. Actualiza la página o revisa la sesión</td>
+        </tr>
+        <tr>
+          <td>Los menús de Supabase no coinciden con la guía</td>
+          <td>Supabase cambia la interfaz con frecuencia. Busca la opción equivalente y consulta los enlaces del Anexo de FUENTES</td>
+        </tr>
+        <tr>
+          <td>Vercel me pide un plan de pago al importar</td>
+          <td>Revisa que estás en el plan <strong>Hobby</strong> y que tu uso es personal</td>
+        </tr>
+        <tr>
+          <td>No me deja crear otro proyecto en Supabase</td>
+          <td>El plan gratuito limita el número de proyectos. Usa uno existente o elimina el que no necesites</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Errores conceptuales frecuentes</h2>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Error:</strong> pegar la URL y la clave directamente en el
+    código («hardcodear»).<br>
+    <strong>Por qué está mal:</strong> el código vive en GitHub y las claves quedarían expuestas.<br>
+    <strong>Solución:</strong> usa siempre variables de entorno en Vercel.</p>
+  </div>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Error:</strong> usar la clave <code>service_role</code>
+    en la web porque «funciona mejor».<br>
+    <strong>Por qué está mal:</strong> da acceso total a tu base de datos saltándose RLS.<br>
+    <strong>Solución:</strong> usa siempre la clave pública y configura bien RLS y los permisos.</p>
+  </div>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Error:</strong> hacer el repositorio público porque
+    «así es más fácil».<br>
+    <strong>Por qué está mal:</strong> cualquiera puede leer el código y buscar claves.<br>
+    <strong>Solución:</strong> repositorio siempre privado.</p>
+  </div>
+
+  <div class="callout warning">
+    <p><span class="ico">⚠️</span><strong>Error:</strong> pedir todo el diseño de golpe en un solo
+    prompt.<br>
+    <strong>Por qué está mal:</strong> si algo sale mal, no sabes qué parte del prompt lo causó.<br>
+    <strong>Solución:</strong> pide cambios en grupos pequeños y prueba después de cada uno.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: RESUMEN
+     ============================================================ -->
+<section class="panel" id="panel-resumen" data-print-title="RESUMEN, RUTINA Y GLOSARIO">
+
+  <h1>📋 Resumen, rutina de trabajo y glosario</h1>
+
+  <h2>Tu rutina de trabajo a partir de ahora</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Quiero…</th><th>Qué hago</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Cambiar un texto, un color o el diseño</strong></td>
+          <td>Lo pido en el chat de AI Studio → envío los cambios a GitHub → Vercel republica solo (1-3 minutos).</td>
+        </tr>
+        <tr>
+          <td><strong>Añadir una sección nueva</strong></td>
+          <td>Igual, con un prompt concreto: <em>«Añade una sección de preguntas frecuentes con 5 preguntas»</em>.</td>
+        </tr>
+        <tr>
+          <td><strong>Ver los contactos recibidos</strong></td>
+          <td>Supabase → Table Editor → <code>registros</code>.</td>
+        </tr>
+        <tr>
+          <td><strong>Deshacer un cambio que no me gusta</strong></td>
+          <td>Pido en AI Studio <em>«Deshaz el último cambio»</em> y vuelvo a enviar a GitHub.</td>
+        </tr>
+        <tr>
+          <td><strong>Arreglar un error</strong></td>
+          <td>Abro la consola (F12), copio el error y uso la plantilla del Paso 6.2.</td>
+        </tr>
+        <tr>
+          <td><strong>Comprobar que todo sigue funcionando</strong></td>
+          <td>Envío un formulario de prueba y compruebo que aparece la fila (y después la borro).</td>
+        </tr>
+        <tr>
+          <td><strong>Reactivar la base de datos pausada</strong></td>
+          <td>Supabase → mi proyecto → <strong>Resume project</strong>.</td>
+        </tr>
+        <tr>
+          <td><strong>Cambiar una clave</strong></td>
+          <td>Genero una nueva en Supabase → actualizo la variable en Vercel → hago <strong>Redeploy</strong>.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Checklist final</h2>
+  <ul class="check-list">
+    <li><input type="checkbox" id="ck-fin-1" data-ck="fin-1"><label for="ck-fin-1"><strong>Paso 0:</strong> tengo cuentas de Google, GitHub, Vercel y Supabase, y mi ficha del proyecto.</label></li>
+    <li><input type="checkbox" id="ck-fin-2" data-ck="fin-2"><label for="ck-fin-2"><strong>Paso 1:</strong> mi web está diseñada y refinada en Google AI Studio, como aplicación solo de frontend.</label></li>
+    <li><input type="checkbox" id="ck-fin-3" data-ck="fin-3"><label for="ck-fin-3"><strong>Paso 2:</strong> el código está en un repositorio <strong>privado</strong> de GitHub.</label></li>
+    <li><input type="checkbox" id="ck-fin-4" data-ck="fin-4"><label for="ck-fin-4"><strong>Paso 3:</strong> mi web está publicada en una dirección <code>…vercel.app</code>.</label></li>
+    <li><input type="checkbox" id="ck-fin-5" data-ck="fin-5"><label for="ck-fin-5"><strong>Paso 4:</strong> la tabla <code>registros</code> existe, con RLS activado, permiso de inserción y política de inserción.</label></li>
+    <li><input type="checkbox" id="ck-fin-6" data-ck="fin-6"><label for="ck-fin-6"><strong>Paso 5:</strong> las variables de entorno están en Vercel, he hecho Redeploy y no hay claves escritas en el código.</label></li>
+    <li><input type="checkbox" id="ck-fin-7" data-ck="fin-7"><label for="ck-fin-7"><strong>Paso 6:</strong> el formulario guarda datos reales, tiene consentimiento y protección básica contra el spam, y he limpiado los indicadores de depuración.</label></li>
+    <li><input type="checkbox" id="ck-fin-8" data-ck="fin-8"><label for="ck-fin-8">No hay ninguna clave secreta (<code>service_role</code> / secret) en el código, en GitHub ni en Vercel.</label></li>
+    <li><input type="checkbox" id="ck-fin-9" data-ck="fin-9"><label for="ck-fin-9">He borrado los registros de prueba.</label></li>
+    <li><input type="checkbox" id="ck-fin-10" data-ck="fin-10"><label for="ck-fin-10">He leído las condiciones del plan gratuito de Vercel y sé si mi uso es personal o comercial.</label></li>
+  </ul>
+
+  <h2>Preguntas frecuentes</h2>
+
+  <details>
+    <summary>¿Necesito saber programar?</summary>
+    <p>No. Toda la programación la hace Google AI Studio a partir de tus instrucciones en español.
+    Tú solo copias y pegas datos en formularios web.</p>
+  </details>
+
+  <details>
+    <summary>¿Cuánto cuesta esto realmente?</summary>
+    <p>Cero euros mientras uses los planes gratuitos de las cuatro herramientas. Solo pagarías si
+    compras un dominio propio (opcional, unos 10-15 € al año) o si pasas a un plan de pago de Vercel
+    o Supabase por superar los límites o por uso comercial.</p>
+  </details>
+
+  <details>
+    <summary>¿Puedo usar la web para mi negocio?</summary>
+    <p>Con el plan Hobby de Vercel, no: es solo para uso personal y no comercial. Para un negocio real
+    necesitas el plan de pago de Vercel u otro hosting cuyas condiciones lo permitan.</p>
+  </details>
+
+  <details>
+    <summary>¿Qué pasa si Supabase pausa mi proyecto?</summary>
+    <p>No se pierde nada. Entras en el panel, abres el proyecto y pulsas <strong>Resume project</strong>.
+    En unos minutos vuelve a funcionar con todos los datos intactos.</p>
+  </details>
+
+  <details>
+    <summary>¿Puedo cambiar la web sin saber nada de código?</summary>
+    <p>Sí. Escribes lo que quieres en el chat de AI Studio, envías los cambios a GitHub y Vercel
+    publica la versión nueva automáticamente.</p>
+  </details>
+
+  <details>
+    <summary>¿Qué pasa si rompo algo?</summary>
+    <p>Nada grave. GitHub guarda el historial completo y Vercel mantiene la última versión que
+    funcionaba. Puedes pedir a AI Studio que deshaga cambios o volver a una versión anterior.</p>
+  </details>
+
+  <details>
+    <summary>¿Por qué mi formulario no guarda datos aunque todo parezca bien?</summary>
+    <p>Casi siempre es una de estas tres cosas: (1) falta el permiso <code>grant insert … to anon</code>,
+    (2) falta la política RLS, o (3) las variables de entorno en Vercel están mal escritas o falta el
+    Redeploy. Revisa los pasos 4.2 y 5.4-5.5.</p>
+  </details>
+
+  <details>
+    <summary>¿Puedo ver los datos desde fuera de Supabase?</summary>
+    <p>Sí. En Supabase puedes exportar la tabla a CSV. También puedes pedir a AI Studio que cree un
+    panel privado, aunque eso ya requiere más configuración y no está cubierto en esta guía.</p>
+  </details>
+
+  <h2>Glosario para principiantes</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Término</th><th>Explicación sencilla</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Prompt</strong></td><td>El texto que le escribes a la IA para pedirle algo.</td></tr>
+        <tr><td><strong>Landing page</strong></td><td>Una página web larga de una sola pantalla, pensada para presentar algo y conseguir que el visitante actúe.</td></tr>
+        <tr><td><strong>Frontend</strong></td><td>La parte de la web que ve y usa el visitante en su navegador.</td></tr>
+        <tr><td><strong>Backend (servidor)</strong></td><td>La parte que trabaja «detrás», en un ordenador remoto. En esta guía no la necesitamos.</td></tr>
+        <tr><td><strong>Código fuente</strong></td><td>Los archivos de texto con las instrucciones que hacen funcionar la web.</td></tr>
+        <tr><td><strong>React / Vite</strong></td><td>Herramientas de programación con las que se construye la web. No necesitas manejarlas.</td></tr>
+        <tr><td><strong>Repositorio (repo)</strong></td><td>Una carpeta en la nube, en GitHub, donde se guarda el código con su historial.</td></tr>
+        <tr><td><strong>Commit</strong></td><td>Un guardado del proyecto con una nota explicando qué cambió.</td></tr>
+        <tr><td><strong>Push</strong></td><td>Enviar los cambios guardados a GitHub.</td></tr>
+        <tr><td><strong>Hosting</strong></td><td>El servicio que mantiene tu web publicada y accesible desde internet.</td></tr>
+        <tr><td><strong>Despliegue (deploy)</strong></td><td>El proceso de publicar o actualizar la web en internet.</td></tr>
+        <tr><td><strong>Despliegue continuo</strong></td><td>Que la web se republique sola cada vez que hay un cambio nuevo en el código.</td></tr>
+        <tr><td><strong>Producción</strong></td><td>La versión real de la web, la que ven los visitantes.</td></tr>
+        <tr><td><strong>URL</strong></td><td>La dirección de una página web.</td></tr>
+        <tr><td><strong>Base de datos</strong></td><td>Un lugar organizado donde se guarda información para consultarla después.</td></tr>
+        <tr><td><strong>Tabla</strong></td><td>Una «hoja de cálculo» dentro de la base de datos.</td></tr>
+        <tr><td><strong>SQL</strong></td><td>El lenguaje con el que se dan órdenes a una base de datos.</td></tr>
+        <tr><td><strong>API</strong></td><td>Una «ventanilla» por la que un programa pide o envía datos a otro.</td></tr>
+        <tr><td><strong>Data API</strong></td><td>La API de Supabase que permite a tu web leer y escribir en la base de datos.</td></tr>
+        <tr><td><strong>Clave API (API key)</strong></td><td>Una especie de contraseña o carné que identifica quién llama a la API.</td></tr>
+        <tr><td><strong>Clave pública (publishable key)</strong></td><td>Clave de Supabase pensada para usarse en la web; con RLS activado solo permite lo que tú autorices. Antes se llamaba «anon key».</td></tr>
+        <tr><td><strong>Clave secreta / service_role</strong></td><td>Clave de administrador de Supabase. <strong>Nunca</strong> se pone en la web ni en GitHub.</td></tr>
+        <tr><td><strong>Variable de entorno</strong></td><td>Un dato guardado en el servicio de hosting, fuera del código, que la web puede leer al funcionar.</td></tr>
+        <tr><td><strong>RLS (Row Level Security)</strong></td><td>Reglas de seguridad de Supabase que deciden quién puede leer, insertar o borrar filas.</td></tr>
+        <tr><td><strong>GRANT</strong></td><td>Una orden SQL que da un permiso concreto (por ejemplo, insertar) a un tipo de usuario.</td></tr>
+        <tr><td><strong>Honeypot</strong></td><td>Campo oculto «trampa» del formulario: las personas no lo rellenan, pero los programas de spam sí.</td></tr>
+        <tr><td><strong>Consola del navegador</strong></td><td>Una pantalla técnica (se abre con F12) donde el navegador muestra mensajes y errores.</td></tr>
+        <tr><td><strong>Caché</strong></td><td>Copia guardada por el navegador para cargar más rápido; a veces muestra versiones antiguas.</td></tr>
+        <tr><td><strong>Dominio</strong></td><td>El nombre de tu web (por ejemplo, <code>miempresa.com</code>).</td></tr>
+        <tr><td><strong>RGPD</strong></td><td>Reglamento europeo de protección de datos personales.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>🎓 ¡Enhorabuena!</h2>
+  <div class="card">
+    <p>Acabas de construir y publicar una <strong>web dinámica profesional</strong> conectando cuatro
+    herramientas distintas, <strong>sin escribir una sola línea de código a mano</strong> y sin pagar nada.</p>
+    <p>A partir de ahora, cada vez que quieras mejorar tu web, solo tendrás que <strong>pedírselo a la
+    IA</strong>, enviar los cambios a GitHub y dejar que Vercel haga el resto.</p>
+  </div>
+
+  <h2>Ideas para seguir avanzando</h2>
+  <ul>
+    <li>Añadir más secciones: preguntas frecuentes, testimonios, blog.</li>
+    <li>Recibir un <strong>aviso por correo</strong> cuando alguien rellene el formulario.</li>
+    <li>Crear un <strong>panel privado</strong> para ver los registros sin entrar en Supabase.</li>
+    <li>Añadir un sistema anti-spam más avanzado (CAPTCHA).</li>
+    <li>Conectar un <strong>dominio propio</strong> y mejorar el posicionamiento en buscadores (SEO).</li>
+    <li>Si el proyecto crece o pasa a ser comercial, valorar los planes de pago de Vercel y Supabase.</li>
+  </ul>
+
+</section>
+
+<!-- ============================================================
+     PANEL: FUENTES
+     ============================================================ -->
+<section class="panel" id="panel-fuentes" data-print-title="FUENTES Y ENLACES OFICIALES">
+
+  <h1>🔗 Enlaces oficiales</h1>
+  <p style="color:var(--text-dim);">Consulta estas páginas cuando necesites confirmar una condición,
+  un límite o un nombre de menú.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Tema</th><th>Enlace</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Google AI Studio</td><td><a href="https://aistudio.google.com" target="_blank" rel="noopener">https://aistudio.google.com</a></td></tr>
+        <tr><td>Crear apps en AI Studio (modo Build)</td><td><a href="https://ai.google.dev/gemini-api/docs/aistudio-build-mode" target="_blank" rel="noopener">https://ai.google.dev/gemini-api/docs/aistudio-build-mode</a></td></tr>
+        <tr><td>Apps full-stack y secretos en AI Studio</td><td><a href="https://ai.google.dev/gemini-api/docs/aistudio-fullstack" target="_blank" rel="noopener">https://ai.google.dev/gemini-api/docs/aistudio-fullstack</a></td></tr>
+        <tr><td>GitHub</td><td><a href="https://github.com" target="_blank" rel="noopener">https://github.com</a></td></tr>
+        <tr><td>Vercel</td><td><a href="https://vercel.com" target="_blank" rel="noopener">https://vercel.com</a></td></tr>
+        <tr><td>Vercel: normas de uso justo y uso comercial</td><td><a href="https://vercel.com/docs/limits/fair-use-guidelines" target="_blank" rel="noopener">https://vercel.com/docs/limits/fair-use-guidelines</a></td></tr>
+        <tr><td>Vercel: plan Hobby</td><td><a href="https://vercel.com/docs/plans/hobby" target="_blank" rel="noopener">https://vercel.com/docs/plans/hobby</a></td></tr>
+        <tr><td>Supabase</td><td><a href="https://supabase.com" target="_blank" rel="noopener">https://supabase.com</a></td></tr>
+        <tr><td>Supabase: claves de API</td><td><a href="https://supabase.com/docs/guides/getting-started/api-keys" target="_blank" rel="noopener">https://supabase.com/docs/guides/getting-started/api-keys</a></td></tr>
+        <tr><td>Supabase: pausa de proyectos gratuitos</td><td><a href="https://supabase.com/docs/guides/platform/free-project-pausing" target="_blank" rel="noopener">https://supabase.com/docs/guides/platform/free-project-pausing</a></td></tr>
+        <tr><td>Supabase: tablas nuevas y la Data API (cambio de 2026)</td><td><a href="https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically" target="_blank" rel="noopener">https://supabase.com/changelog/45329-breaking-change-tables-not-exposed-to-data-and-graphql-api-automatically</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span>Las herramientas mencionadas actualizan sus menús, claves y condiciones
+    con frecuencia. Si algún nombre o botón ha cambiado, busca la opción equivalente y consulta los
+    enlaces oficiales de arriba.</p>
+  </div>
+
+</section>
+
+<!-- ============================================================
+     PANEL: CRÉDITOS
+     ============================================================ -->
+<section class="panel" id="panel-creditos" data-print-title="CRÉDITOS">
+
+  <div class="credits-hero">
+    <h2>Rubén Sbarsky</h2>
+    <p class="credits-role">Autor del tutorial</p>
+    <p class="credits-date">01/10/2026 — 09:45:12</p>
+  </div>
+
+  <div class="svg-hero">
+    <svg role="img" aria-label="Diagrama animado del flujo de trabajo (mismo SVG que en la portada)">
+      <use href="#svgHero"></use>
+    </svg>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <p><strong>Tutorial:</strong> «Crea y publica tu propia web con base de datos, gratis»</p>
+    <p><strong>Versión:</strong> 2.0 — <strong>Revisión:</strong> 1 de octubre de 2026</p>
+    <p><strong>Herramientas utilizadas:</strong> Google AI Studio · GitHub · Vercel · Supabase</p>
+    <p style="color:var(--text-dim);margin-bottom:0;">
+      Guía elaborada para principiantes absolutos, sin conocimientos previos de programación.
+    </p>
+  </div>
+
+  <div class="callout note">
+    <p><span class="ico">ℹ️</span><strong>Sobre esta conversión a HTML.</strong> El contenido está basado
+    en el material original del tutorial. La fecha y la hora que aparecen arriba quedaron grabadas de
+    forma fija en el momento de la creación de este documento HTML y no se recalculan al abrirlo.</p>
+  </div>
+
+</section>
+
+</main>
+
+<button class="to-top" id="toTop" aria-label="Volver arriba">↑</button>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ============ 1. PESTAÑAS ============ */
+  var tabs   = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+  var panels = Array.prototype.slice.call(document.querySelectorAll('.panel'));
+
+  function activateTab(id, scroll){
+    var target = document.getElementById(id);
+    if(!target) return;
+    tabs.forEach(function(t){ t.classList.toggle('active', t.dataset.tab === id); });
+    panels.forEach(function(p){ p.classList.toggle('active', p.id === id); });
+    try{ localStorage.setItem('tut-tab', id); }catch(e){}
+    if(scroll !== false){ window.scrollTo({top:0, behavior:'smooth'}); }
+  }
+
+  tabs.forEach(function(t){
+    t.addEventListener('click', function(){ activateTab(t.dataset.tab); });
+  });
+
+  // Restaurar pestaña
+  try{
+    var savedTab = localStorage.getItem('tut-tab');
+    if(savedTab && document.getElementById(savedTab)) activateTab(savedTab, false);
+  }catch(e){}
+
+  // Enlaces internos "data-goto"
+  document.querySelectorAll('[data-goto]').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      ev.preventDefault();
+      activateTab(a.dataset.goto);
+    });
+  });
+
+  /* ============ 2. CHECKBOXES + LOCALSTORAGE + PROGRESO ============ */
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-ck]'));
+
+  boxes.forEach(function(cb){
+    var key = 'tut-ck-' + cb.dataset.ck;
+    try{
+      if(localStorage.getItem(key) === '1') cb.checked = true;
+    }catch(e){}
+    cb.addEventListener('change', function(){
+      try{ localStorage.setItem(key, cb.checked ? '1' : '0'); }catch(e){}
+      updateProgress();
+    });
+  });
+
+  var progMini = document.getElementById('progMini');
+
+  function updateProgress(){
+    if(!boxes.length){ if(progMini) progMini.textContent = '0%'; return; }
+    var done = boxes.filter(function(b){ return b.checked; }).length;
+    var pct  = Math.round((done / boxes.length) * 100);
+    if(progMini) progMini.textContent = pct + '%';
+  }
+  updateProgress();
+
+  /* ============ 3. BOTONES COPIAR ============ */
+  document.querySelectorAll('.copyBtn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var wrap = btn.closest('.code-wrap');
+      if(!wrap) return;
+      var pre = wrap.querySelector('pre');
+      if(!pre) return;
+      var text = pre.innerText;
+
+      function done(){
+        var old = btn.textContent;
+        btn.textContent = '✓ COPIADO';
+        btn.classList.add('done');
+        setTimeout(function(){
+          btn.textContent = old;
+          btn.classList.remove('done');
+        }, 1600);
+      }
+
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done).catch(function(){ fallbackCopy(text, done); });
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+  });
+
+  function fallbackCopy(text, cb){
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand('copy'); cb(); }catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  /* ============ 4. TAMAÑO DE FUENTE ============ */
+  var root = document.documentElement;
+  var fs = 16;
+  try{
+    var savedFs = parseInt(localStorage.getItem('tut-fs'), 10);
+    if(savedFs >= 12 && savedFs <= 24) fs = savedFs;
+  }catch(e){}
+  root.style.setProperty('--fs', fs + 'px');
+
+  function setFs(v){
+    fs = Math.max(12, Math.min(24, v));
+    root.style.setProperty('--fs', fs + 'px');
+    try{ localStorage.setItem('tut-fs', String(fs)); }catch(e){}
+  }
+
+  document.getElementById('btnFontUp').addEventListener('click', function(){ setFs(fs + 1); });
+  document.getElementById('btnFontDown').addEventListener('click', function(){ setFs(fs - 1); });
+
+  /* ============ 5. TEMA CLARO / OSCURO ============ */
+  var btnTheme = document.getElementById('btnTheme');
+
+  function applyTheme(light){
+    document.body.classList.toggle('light', light);
+    btnTheme.textContent = light ? '🌙' : '☀️';
+    try{ localStorage.setItem('tut-theme', light ? 'light' : 'dark'); }catch(e){}
+  }
+
+  var savedTheme = 'dark';
+  try{ savedTheme = localStorage.getItem('tut-theme') || 'dark'; }catch(e){}
+  applyTheme(savedTheme === 'light');
+
+  btnTheme.addEventListener('click', function(){
+    applyTheme(!document.body.classList.contains('light'));
+  });
+
+  /* ============ 6. IMPRIMIR / GUARDAR COMO PDF ============ */
+  var btnPrint = document.getElementById('btnPrint');
+
+  btnPrint.addEventListener('click', function(){
+    // 1) Abrir todos los <details> para que su contenido se imprima
+    var details = Array.prototype.slice.call(document.querySelectorAll('details'));
+    var prev = details.map(function(d){ return d.open; });
+    details.forEach(function(d){ d.open = true; });
+
+    // 2) Restaurar el estado al terminar (o por si afterprint no dispara)
+    var restored = false;
+    function restore(){
+      if(restored) return;
+      restored = true;
+      details.forEach(function(d, i){ d.open = prev[i]; });
+    }
+    window.addEventListener('afterprint', restore);
+    setTimeout(restore, 4000);
+
+    // 3) Intentar imprimir
+    var printed = false;
+    try{
+      window.print();
+      printed = true;
+    }catch(e){
+      printed = false;
+    }
+
+    // 4) Fallback para iframes con sandbox (previsualizadores de IDE)
+    if(!printed || (window.self !== window.top)){
+      // Si estamos dentro de un iframe, intentamos un fallback abriendo
+      // una nueva pestaña con el contenido, donde sí se puede imprimir.
+      try{
+        var w = window.open('', '_blank');
+        if(w){
+          w.document.open();
+          w.document.write('<!DOCTYPE html>' + document.documentElement.outerHTML);
+          w.document.close();
+          setTimeout(function(){
+            try{ w.focus(); w.print(); }catch(e){}
+          }, 700);
+        } else {
+          alert('Para imprimir o guardar como PDF, abre este archivo HTML directamente en el navegador (fuera de un previsualizador).');
+        }
+      }catch(e){
+        alert('Para imprimir o guardar como PDF, abre este archivo HTML directamente en el navegador.');
+      }
+    }
+  });
+
+  /* ============ 7. BOTÓN VOLVER ARRIBA + BARRA DE PROGRESO ============ */
+  var toTop = document.getElementById('toTop');
+  var progressBar = document.getElementById('progressBar');
+
+  function onScroll(){
+    var y = window.scrollY || document.documentElement.scrollTop;
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = h > 0 ? (y / h) * 100 : 0;
+    progressBar.style.width = pct + '%';
+    toTop.classList.toggle('show', y > 400);
+  }
+
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  toTop.addEventListener('click', function(){
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+
+  /* ============ 8. BUSCADOR CON RESALTADO ============ */
+  var searchInput = document.getElementById('searchInput');
+  var btnClear = document.getElementById('btnSearchClear');
+
+  function clearHighlights(){
+    document.querySelectorAll('mark.search-hl').forEach(function(m){
+      var parent = m.parentNode;
+      if(!parent) return;
+      parent.replaceChild(document.createTextNode(m.textContent), m);
+      parent.normalize();
+    });
+  }
+
+  function highlight(term){
+    clearHighlights();
+    if(!term || term.length < 2) return 0;
+
+    // Mostrar todos los paneles temporalmente para buscar en todos,
+    // luego se restaura el panel activo.
+    var activePanel = document.querySelector('.panel.active');
+    var hiddenPanels = panels.filter(function(p){ return p !== activePanel; });
+    hiddenPanels.forEach(function(p){ p.classList.add('active'); });
+
+    var count = 0;
+    var lower = term.toLowerCase();
+
+    panels.forEach(function(panel){
+      var walker = document.createTreeWalker(
+        panel,
+        NodeFilter.SHOW_TEXT,
+        {
+          acceptNode: function(node){
+            if(!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+            var p = node.parentNode;
+            if(!p) return NodeFilter.FILTER_REJECT;
+            var tag = p.nodeName.toLowerCase();
+            if(tag === 'script' || tag === 'style' || tag === 'mark') return NodeFilter.FILTER_REJECT;
+            if(p.classList && p.classList.contains('copyBtn')) return NodeFilter.FILTER_REJECT;
+            return NodeFilter.FILTER_ACCEPT;
+          }
+        }
+      );
+
+      var nodes = [];
+      while(walker.nextNode()) nodes.push(walker.currentNode);
+
+      nodes.forEach(function(node){
+        var text = node.nodeValue;
+        var idx = text.toLowerCase().indexOf(lower);
+        if(idx === -1) return;
+
+        var frag = document.createDocumentFragment();
+        var rest = text;
+        var lowerRest = rest.toLowerCase();
+
+        while(idx !== -1){
+          if(idx > 0) frag.appendChild(document.createTextNode(rest.slice(0, idx)));
+          var m = document.createElement('mark');
+          m.className = 'search-hl';
+          m.textContent = rest.slice(idx, idx + term.length);
+          frag.appendChild(m);
+          count++;
+          rest = rest.slice(idx + term.length);
+          lowerRest = rest.toLowerCase();
+          idx = lowerRest.indexOf(lower);
+        }
+        if(rest) frag.appendChild(document.createTextNode(rest));
+
+        if(node.parentNode){
+          node.parentNode.replaceChild(frag, node);
+        }
+      });
+    });
+
+    // Restaurar visibilidad
+    hiddenPanels.forEach(function(p){ p.classList.remove('active'); });
+
+    return count;
+  }
+
+  var searchTimer = null;
+
+  function runSearch(){
+    var term = (searchInput.value || '').trim();
+    if(!term){
+      clearHighlights();
+      return;
+    }
+    var n = highlight(term);
+    if(n > 0){
+      // Resaltar el primer resultado como "actual"
+      var first = document.querySelector('mark.search-hl');
+      if(first){
+        first.classList.add('cur');
+        // Desplazar la vista hasta el primer resultado dentro del panel activo
+        var panel = first.closest('.panel');
+        if(panel && !panel.classList.contains('active')){
+          activateTab(panel.id, false);
+        }
+        setTimeout(function(){
+          try{ first.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
+        }, 120);
+      }
+    }
+  }
+
+  searchInput.addEventListener('input', function(){
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(runSearch, 320);
+  });
+
+  searchInput.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){
+      clearTimeout(searchTimer);
+      runSearch();
+    }
+  });
+
+  btnClear.addEventListener('click', function(){
+    searchInput.value = '';
+    clearHighlights();
+    searchInput.focus();
+  });
+
+  /* ============ 9. ATAJOS DE TECLADO ============ */
+  document.addEventListener('keydown', function(ev){
+    if((ev.ctrlKey || ev.metaKey) && ev.key === 'f'){
+      ev.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+
+})();
+</script>
+
+</body>
+</html>
